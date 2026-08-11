@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it" class="black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Auletta LDR — Effettua l'accesso</title>
+
+    <!-- fogli di stile -->
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/webp" href="{{ asset('img/logo-prenotaldr-giallo.webp') }}">
+
+    <!-- font da googlefonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
+    <!--  -->
+
+</head>
+
+<body class="full-page-form-body">
+    <main>
+
+        <!-- login form -->
+        <form id="login-form" novalidate method="post">
+            <section class="form-block horizontal">
+                <img src="{{ asset('img/logo-prenotaldr-giallo.webp') }}" alt="Logo Auletta LDR">
+                <h1>Accedi per prenotare l'auletta</h1>
+            </section>
+            <section class="form-block">
+                <div class="form-block">
+                    <label for="n-tessera"><span>Email / Numero tessera</span></label>
+                    <input id="n-tessera" name="n-tessera" type="text" placeholder="tuamail@esempio.it"
+                        autocomplete="username" required>
+                </div>
+                <div class="form-block">
+                    <label for="password"><span>Password</span></label>
+                    <input id="password" name="password" type="password" placeholder="Inserisci la password"
+                        autocomplete="current-password" required>
+                    <h3>Password dimenticata? <a id="btn-show-reset">Reimposta password</a></h3>
+                </div>
+            </section>
+            <section class="form-block">
+                <button type="submit" class="active">Effettua l'accesso</button>
+                <div class="divider"></div>
+                <h3>Non hai ancora un account?</h3>
+                <a href="/register.html">
+                    <button type="button">Crea un account</button>
+                </a>
+            </section>
+        </form>
+
+        <!-- form email o numero tessera per reset password -->
+        <form id="reset-password-form" novalidate class="hidden">
+            <section class="form-block horizontal">
+                <h1>Reimposta la tua password</h1>
+            </section>
+            <section class="form-block">
+                <div class="form-block">
+                    <label for="reset-identifier"><span>Email / Numero tessera</span></label>
+                    <input id="reset-identifier" name="reset-identifier" type="text" 
+                           placeholder="tuamail@esempio.it" autocomplete="username" required>
+                </div>
+            </section>
+            <section class="form-block">
+                <button type="submit" class="active">Invia link di reset</button>
+                <div class="divider"></div>
+                <a id="btn-back-login" style="cursor:pointer">
+                    <button type="button">Torna al login</button>
+                </a>
+            </section>
+        </form>
+    </main>
+    <script type="module" src="/src/js/auth.js"></script>
+</body>
+
+</html>
