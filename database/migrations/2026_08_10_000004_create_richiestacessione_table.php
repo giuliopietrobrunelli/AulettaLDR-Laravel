@@ -12,13 +12,13 @@ return new class extends Migration
             $table->increments('id_richiesta');
 
             $table->unsignedInteger('id_prenotazione');
-            $table->foreign('id_prenotazione')->references('id_prenotazione')->on('Prenotazione');
+            $table->foreign('id_prenotazione')->references('id_prenotazione')->on('Prenotazione')->onUpdate('cascade')->onDelete('cascade');
 
             $table->unsignedInteger('id_mittente');
-            $table->foreign('id_mittente')->references('id_utente')->on('Utente');
+            $table->foreign('id_mittente')->references('id_utente')->on('Utente')->onUpdate('cascade')->onDelete('cascade');
 
             $table->unsignedInteger('id_destinatario');
-            $table->foreign('id_destinatario')->references('id_utente')->on('Utente');
+            $table->foreign('id_destinatario')->references('id_utente')->on('Utente')->onUpdate('cascade')->onDelete('cascade');
 
             $table->enum('stato', ['in_attesa', 'accettata', 'rifiutata', 'scaduta'])
                   ->default('in_attesa');

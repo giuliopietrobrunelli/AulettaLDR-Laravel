@@ -1,0 +1,333 @@
+/** Responsive styles for screens larger than 880px */
+@media (min-width: 881px) {
+    
+    #mobile-header, #navigation-bar, #modal-menu {
+        display: none !important;
+    }
+
+    #modal-notifiche {
+        max-height: 250px;
+        width: max-content;
+    }
+
+    #day-back {
+        margin-right: 0px;
+        max-height: 30px;
+        min-height: inherit;
+    }
+    .back-to-bar {
+        position: static;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 30px;
+        gap: 10px;
+        padding: 0px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        border: none;
+    }
+
+    .back-to-bar span {
+        display: none;
+    }
+
+}
+
+
+/** Responsive styles for screens smaller than 880px */
+@media (max-width: 880px) {
+
+    #desktop-header, #week-calendar-columns, #week-calendar-turns, #week-view-actions {
+        display: none;
+    }
+
+    #week-view-unavailable {
+        display: grid !important;
+    }
+
+    /* calendario */
+
+    .calendar-day {
+        min-height: 155px;
+    }
+
+    .booked-day-recap {
+        flex-wrap: wrap;
+        max-width: 120px;
+        box-sizing: border-box;
+    }
+    .booked-day-recap img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .divider {
+        min-height: 1px;
+    }
+
+    #modal-notifiche {
+        max-height: 250px;
+        width: 280px;
+    }
+    
+}
+
+/** Responsive styles for mobile devices (screens smaller than 600px) */
+@media (max-width: 600px) {
+
+    body {
+        padding-inline: 0px;
+        gap: 20px;
+        overflow-x: hidden;
+    }
+
+    input, textarea {
+        font-size: 16px !important; 
+    }
+
+    h1 {
+        font-size: 38px;
+        text-wrap: balance;
+        font-weight: 500;
+    }
+
+    footer {
+        display: none;
+    }
+
+    #account-settings, #day-schedules, #my-bookings, #calendar-header, header, nav, footer {
+        padding-inline: 20px;
+        box-sizing: border-box;
+    }
+
+    #account-settings, #calendar-container, #day-schedules, #my-bookings {
+        padding-bottom: 90px;
+    }
+
+    #saluto-header {
+        margin-left: 5px;
+    }
+
+    nav.dynamic-nav {
+        position: absolute;
+        top: 0;
+    }
+
+    nav.dynamic-nav .nav-switch {
+        display: none !important;
+    }
+
+    #logo img {
+        max-width: 40px;
+    }
+
+    #logo h2 {
+        text-wrap: balance;
+    }
+
+    a {
+        max-height: 40px;
+    }
+    button {
+        min-height: 40px;
+        padding: 6px 14px;
+    }
+    button span, button {
+        font-size: 14px;
+    }
+    button.mini {
+        max-height: 40px;
+        min-height: 40px;
+    }
+    button.mini .lucide {
+        width: 18px;
+        height: 18px;
+    }
+
+    
+    #login-form, 
+    #register-form, 
+    #set-password-form, 
+    #register-by-name-form,
+    #reset-password-form {
+        width: 100%;
+        padding: 30px 20px;
+        box-sizing: border-box;
+    }
+    .full-page-form-body {
+        width: min-content;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    #saluto-header {
+        display: none;
+    }
+    
+    
+    /* calendario */
+
+    
+    #calendar-header {
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        gap: 20px;
+    }
+
+    .calendar-day {
+        min-height: 90px;
+    }
+
+    .booked-day-recap img {
+        width: 20px;
+        height: 20px;
+        margin-left: -12px;
+    }
+
+    .booked-day-recap {
+        padding-right: 5px;
+        padding-bottom: 5px;
+    }
+
+    #cambia-vista-mensile {
+        display: none;
+    }
+
+    .calendar-day.past span, .calendar-day.past booked-day-recap{
+        text-decoration: line-through;
+        opacity: 0.1;
+    }
+
+    #indicatore-data-prenota-turni-container {
+        display: flex;
+        /* flex-direction: column; */
+        justify-content: start;
+        align-items: center;
+    }
+
+    #day-view-actions {
+        width: 100%;
+    }
+
+    /* prenotazioni */
+
+    .reservation-card {
+        align-items: center;
+        align-items: start;
+        flex-direction: column;
+        padding-right: 0px;
+        gap: 0px;
+    }
+    .reservation-info {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .reservation-card .action-container {
+        padding: 10px 0px 10px 10px;
+        border-top: .5px solid var(--black-3);
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .booking-bar {
+        transition: transform .6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease-in-out, visibility 0.38s;
+    }
+
+    .booking-bar.is-visible {
+        transform: translateY(0px);
+    }
+
+    .toast-container.pos-bottom-center {
+        bottom: 115px;
+    }
+
+    .booking-summary-row {
+        flex-direction: column;
+    }
+
+    /* modali */
+
+    .header-modals {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        z-index: 999;
+        pointer-events: none;
+        inset: 0;
+        margin-top: 0px;
+        box-sizing: border-box;
+        pointer-events:none;
+    }
+
+    .modal {
+        position: relative;
+        bottom: 0;
+        right: 0;
+        height: 40%;
+        width: 100%;
+        transform: scale(0.96) translateY(100%);
+        pointer-events: none;
+        box-shadow: 0 16px 60px 0 rgba(0,0,0,0.46), 0 4px 20px 0 rgba(0,0,0,0.28);
+        padding-bottom: 90px;
+    }
+    .modal-title {
+        font-size: 15px;
+    }
+    .modal span {
+        font-size: 18px;
+    }
+    .modal-header,
+    .lista-notifiche {
+        padding-inline: 25px !important;
+        padding-block: 10px !important;
+    }
+    .booking-week-row,
+    .modal-advise {
+        padding-inline: 0px;
+        padding-block: 5px;
+    }
+
+    .modal.showing {
+        pointer-events: auto;
+    }
+
+    .lista-notifiche > .modal-advise:last-child {
+        padding-bottom: 100px;
+    }
+
+    #navigation-bar {
+        z-index: 999;
+    }
+    #booking-bar {
+        z-index: 9999;
+    }
+
+    #modal-notifiche {
+        max-height: none;
+        width: 100%;
+    }
+
+    .modal-advise-title {
+        padding-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .modal-advise-actions {
+        padding-top: 15px;
+    }
+
+    #day-schedules.current-day-schedule {
+        padding-left: 40px;
+    }
+    .day-active-track {
+        left: 20px;
+    }
+
+}

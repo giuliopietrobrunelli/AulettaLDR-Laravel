@@ -13,7 +13,7 @@ return new class extends Migration
             $table->enum('ruoli_amministratore', ['sviluppatore', 'membro_direttivo']);
 
             $table->unsignedInteger('id_utente');
-            $table->foreign('id_utente')->references('id_utente')->on('Utente');
+            $table->foreign('id_utente')->references('id_utente')->on('Utente')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
