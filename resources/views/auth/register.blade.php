@@ -1,60 +1,54 @@
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+    <x-slot name="title">
+        Auletta LDR — Registrati tramite numero tessera
+    </x-slot>
+
+    <form id="register-form" novalidate method="POST" action="{{ route('register') }}">
+        @csrf
+
+        <section class="form-block horizontal">
+            <h1>Registrati tramite la tua tessera LDR</h1>
+        </section>
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
-
-            <div>
-                <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+        <section class="form-block">
+            <div class="form-block">
+                <label for="n-tessera"><span>Numero tessera</span></label>
+                <input 
+                    id="n-tessera" 
+                    name="n_tessera" 
+                    type="number" 
+                    placeholder="0000" 
+                    pattern="\d*" 
+                    min="1"
+                    oninput="this.value=this.value.replace(/\D/g,'')" 
+                    value="{{ old('n_tessera') }}"
+                    autocomplete="off" 
+                    required
+                    autofocus
+                >
             </div>
+        </section>
 
-            <div class="mt-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            </div>
+        <section class="form-block">
+            <button type="submit" class="active">Ricevi codice via mail</button>
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            </div>
+            <h3>Problemi con la registrazione? <a href="mailto:illumedellaragione6@gmail.com">Contatta il direttivo</a></h3>
 
-            <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-            </div>
+            <div class="divider"></div>
 
-            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="mt-4">
-                    <x-label for="terms">
-                        <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" required />
+            <h3>Non hai la tessera a portata di mano?</h3>
+            <a href="{{ route('register.alternative') }}">
+                <button type="button">Registrati tramite dati</button>
+            </a>
 
-                            <div class="ms-2">
-                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Privacy Policy').'</a>',
-                                ]) !!}
-                            </div>
-                        </div>
-                    </x-label>
-                </div>
-            @endif
+            <div class="divider"></div>
 
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ms-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
-        </form>
-    </x-authentication-card>
+            <h3>Hai già un account?</h3>
+            <a href="{{ route('login') }}">
+                <button type="button">Accedi</button>
+            </a>
+        </section>
+    </form>
 </x-guest-layout>

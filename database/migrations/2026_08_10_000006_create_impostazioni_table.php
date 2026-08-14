@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('Impostazioni', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
-            $table->text('valore')->nullable();
+            $table->integer('valore')->nullable();
         });
     }
 

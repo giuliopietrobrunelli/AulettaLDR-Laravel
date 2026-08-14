@@ -7,11 +7,14 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use App\Models\User;
+use App\Models\Utente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -45,12 +48,37 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
-        RateLimiter::for('passkeys', function (Request $request) {
-            $credentialId = $request->input('credential.id');
+        // ── login: accetta email O numero tessera nello stesso campo ──────
+        // equivalente di setupLoginForm() in auth.js: se contiene "@" è
+        // un'email, altrimenti si cerca l'Utente per numero_tessera, e si
+        // procede solo se quell'Utente risulta "registrato"
+        Fortify::authenticateUsing(function (Request $request) {
+            $identifier = $request->input('email');
 
-            return Limit::perMinute(10)->by(
-                ($credentialId ?: $request->session()->getId()).'|'.$request->ip()
-            );
+            if (str_contains($identifier, '@')) {
+                $user = User::where('email', $identifier)->first();
+            } else {
+                if (!ctype_digit((string) $identifier)) {
+                    return null; // stessa validazione di auth.js: solo numeri per la tessera
+                }
+
+                $utente = Utente::where('numero_tessera', $identifier)
+                    ->where('registrato', true)
+                    ->first();
+
+                $user = $utente?->user;
+            }
+
+            if ($user && Hash::check($request->password, $user->password)) {
+                return $user;
+            }
+
+            return null;
+        });
+
+        // ── testi/etichette delle view di Fortify ──────────────────────────
+        Fortify::loginView(function () {
+            return view('auth.login');
         });
     }
 }

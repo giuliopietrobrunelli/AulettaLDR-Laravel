@@ -12,7 +12,7 @@ return new class extends Migration
             $table->increments('id_feedback');
 
             $table->unsignedInteger('id_utente');
-            $table->foreign('id_utente')->references('id_utente')->on('Utente');
+            $table->foreign('id_utente')->references('id_utente')->on('Utente')->onUpdate('cascade')->onDelete('cascade');
 
             $table->enum('categoria', ['bug', 'suggerimento', 'domanda', 'altro']);
             $table->text('contenuto');

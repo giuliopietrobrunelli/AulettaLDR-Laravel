@@ -14,10 +14,10 @@ return new class extends Migration
             $table->dateTime('data_conferma')->nullable();
 
             $table->unsignedInteger('id_turno');
-            $table->foreign('id_turno')->references('id_turno')->on('Turno');
+            $table->foreign('id_turno')->references('id_turno')->on('Turno')->onUpdate('cascade')->onDelete('cascade');
 
             $table->unsignedInteger('id_utente');
-            $table->foreign('id_utente')->references('id_utente')->on('Utente');
+            $table->foreign('id_utente')->references('id_utente')->on('Utente')->onUpdate('cascade')->onDelete('cascade');
 
             $table->enum('stato', ['non_confermata', 'confermata', 'riservata', 'annullata'])->default('non_confermata');
             $table->date('data_prenotazione');
