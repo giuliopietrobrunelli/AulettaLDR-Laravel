@@ -44,4 +44,9 @@ class Utente extends Model
     {
         return $this->hasMany(Feedback::class, 'id_utente', 'id_utente');
     }
+
+    public function verificationCodes()
+{
+    return $this->hasMany(VerificationCode::class, 'id_utente', 'id_utente');
+}
 }
