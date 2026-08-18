@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Prenotazione;
+use App\Models\RichiestaCessione;
+use App\Models\User;
+use App\Models\Utente;
+use App\Policies\Concerns\AutorizzaAdmin;
+use App\Policies\Concerns\VerificaLimiteSettimanale;
+
+class RichiestaCessionePolicy
+{
+    use AutorizzaAdmin, VerificaLimiteSettimanale;
+
+    public function create(User $user, Prenotazione $prenotazione, Utente $destinatario): bool
+    {
+        $mittenteUtente = $user->utente;
+
+        if (!$mittenteUtente) {
+            return false;
+        }
+
+        if ($prenotazione->id_utente !== $mittenteUtente->id_utente) {
+            return false;
+        }
+
+        if (!in_array($prenotazione->stato, ['confermata', 'non_confermata'])) {
+            return false;
+        }
+
+        if ($destinatario->id_utente === $mittenteUtente->id_utente) {
+            return false;
+        }
+
+        if (!$destinatario->cauzione || !$destinatario->registrato) {
+            return false;
+        }
+
+        return $this->rispettaLimiteSettimanale($destinatario->id_utente, $prenotazione->data_prenotazione);
+    }
+}
