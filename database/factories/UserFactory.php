@@ -49,7 +49,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the user should have a personal team.
+     * Indicate that the user should have a personal team.1
      */
     public function withPersonalTeam(?callable $callback = null): static
     {
@@ -60,7 +60,6 @@ class UserFactory extends Factory
         return $this->has(
             Team::factory()
                 ->state(fn (array $attributes, User $user) => [
-                    'name' => $user->name.'\'s Team',
                     'user_id' => $user->id,
                     'personal_team' => true,
                 ])

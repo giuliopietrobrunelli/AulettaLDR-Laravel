@@ -15,8 +15,12 @@ class Prenotazione extends Model
     const created_at = 'data_creazione_prenotazione';
 
     protected $fillable = [
-        'id_prenotazione', 'data_conferma',
-        'id_turno', 'id_utente', 'stato', 'data_prenotazione',
+        'id_prenotazione',
+        'data_conferma',
+        'id_turno',
+        'id_utente',
+        'stato',
+        'data_prenotazione',
     ];
 
     protected $casts = [
@@ -38,5 +42,12 @@ class Prenotazione extends Model
     public function richiesteCessione()
     {
         return $this->hasMany(RichiestaCessione::class, 'id_prenotazione', 'id_prenotazione');
+    }
+
+    public function scopeVisibili($query)
+    {
+        return $query->whereHas('turno', function ($q) {
+            $q->where('attivo', true);
+        });
     }
 }

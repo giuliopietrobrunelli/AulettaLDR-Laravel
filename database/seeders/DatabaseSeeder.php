@@ -92,8 +92,8 @@ class DatabaseSeeder extends Seeder
                 $idUtente = fake()->randomElement($candidati);
 
                 $stato = $finestraConfermaChiusa
-                    ? fake()->randomElement(['non_confermata', 'confermata'])
-                    : 'non_confermata';
+                ? 'confermata'
+                : 'non_confermata';
             }
 
             $key = $idUtente . '-' . $settimanaKey;
