@@ -14,7 +14,11 @@ class Turno extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_turno', 'orario_inizio', 'orario_fine', 'indice', 'attivo',
+        'id_turno',
+        'orario_inizio',
+        'orario_fine',
+        'indice',
+        'attivo',
     ];
 
     protected $casts = [

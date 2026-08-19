@@ -39,4 +39,18 @@ class RichiestaCessionePolicy
 
         return $this->rispettaLimiteSettimanale($destinatario->id_utente, $prenotazione->data_prenotazione);
     }
+
+    public function accept(User $user, RichiestaCessione $richiesta): bool
+    {
+        $utente = $user->utente;
+
+        return $utente !== null
+            && $richiesta->id_destinatario === $utente->id_utente
+            && $richiesta->stato === 'in_attesa';
+    }
+
+    public function reject(User $user, RichiestaCessione $richiesta): bool
+    {
+        return $this->accept($user, $richiesta); // stessa condizione di accept
+    }
 }

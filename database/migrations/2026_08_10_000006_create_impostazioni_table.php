@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('Impostazioni', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nome');
+            $table->string('nome')->unique();
             $table->integer('valore')->nullable();
         });
     }

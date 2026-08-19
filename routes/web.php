@@ -22,12 +22,16 @@ Route::get('/register-alternative', function(){
     return view('auth.register-alternative');
 })->middleware(['guest'])->name('register.alternative');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/turni', fn () => view('admin.turni'))->name('admin.turni');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
+    Route::get('/app', function () {
+        return view('app');
     })->name('dashboard');
 });

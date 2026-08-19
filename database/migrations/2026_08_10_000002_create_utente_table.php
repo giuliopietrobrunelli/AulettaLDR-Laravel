@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nome');
             $table->string('cognome');
             $table->string('email')->unique();
-            $table->unsignedBigInteger('telefono')->nullable();
+            $table->string('telefono')->nullable();
             $table->string('facolta_universitaria')->nullable();
             $table->boolean('cauzione')->default(false);
             $table->boolean('trattamento_dati')->default(false);

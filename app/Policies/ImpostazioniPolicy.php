@@ -14,4 +14,9 @@ class ImpostazioniPolicy
     {
         return $this->isAdmin($user);
     }
+
+    public function updateAny(User $user): bool
+    {
+        return $this->isAdmin($user);
+    }
 }
