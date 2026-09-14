@@ -19,6 +19,11 @@ class PrenotazionePolicy
             return true;
         }
 
+        return $this->creaComeUtenteNormale($user, $dataPrenotazione);
+    }
+
+    public function creaComeUtenteNormale(User $user, ?string $dataPrenotazione = null): bool
+    {
         $utente = $user->utente;
 
         if (!$utente || !$utente->cauzione || !$utente->registrato) {
@@ -51,24 +56,24 @@ class PrenotazionePolicy
     }
 
     public function delete(User $user, Prenotazione $prenotazione): bool
-{
-    $utente = $user->utente;
+    {
+        $utente = $user->utente;
 
-    if (!$utente) {
-        return false;
+        if (!$utente) {
+            return false;
+        }
+
+        if ($this->isAdmin($user)) {
+            return true; // l'admin cancella qualsiasi prenotazione, indipendentemente dallo stato
+        }
+
+        // un socio normale non può mai cancellare una prenotazione confermata o riservata (non sua)
+        if (in_array($prenotazione->stato, ['confermata', 'riservata'])) {
+            return false;
+        }
+
+        return $prenotazione->id_utente === $utente->id_utente;
     }
-
-    if ($this->isAdmin($user)) {
-        return true; // l'admin cancella qualsiasi prenotazione, indipendentemente dallo stato
-    }
-
-    // un socio normale non può mai cancellare una prenotazione confermata o riservata (non sua)
-    if (in_array($prenotazione->stato, ['confermata', 'riservata'])) {
-        return false;
-    }
-
-    return $prenotazione->id_utente === $utente->id_utente;
-}
 
     private function rispettaFinestraVisibilita(string $dataPrenotazione): bool
     {

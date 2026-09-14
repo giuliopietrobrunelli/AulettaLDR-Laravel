@@ -37,6 +37,15 @@ class RichiestaCessionePolicy
             return false;
         }
 
+        // non può aprirne una nuova se ce n'è già una in attesa per questa prenotazione
+        $esisteInAttesa = RichiestaCessione::where('id_prenotazione', $prenotazione->id_prenotazione)
+            ->where('stato', 'in_attesa')
+            ->exists();
+
+        if ($esisteInAttesa) {
+            return false;
+        }
+
         return $this->rispettaLimiteSettimanale($destinatario->id_utente, $prenotazione->data_prenotazione);
     }
 

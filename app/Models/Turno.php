@@ -39,4 +39,19 @@ class Turno extends Model
     {
         return $this->hasMany(Prenotazione::class, 'id_turno', 'id_turno');
     }
+
+    public static function sovrappostoConEsistenti(string $orarioInizio, string $orarioFine, ?int $escludiId = null): bool
+    {
+        $query = self::where('attivo', true)
+            ->where(function ($q) use ($orarioInizio, $orarioFine) {
+                $q->where('orario_inizio', '<', $orarioFine)
+                    ->where('orario_fine', '>', $orarioInizio);
+            });
+
+        if ($escludiId !== null) {
+            $query->where('id_turno', '!=', $escludiId);
+        }
+
+        return $query->exists();
+    }
 }

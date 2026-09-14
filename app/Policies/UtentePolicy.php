@@ -25,6 +25,11 @@ class UtentePolicy
         return $this->isAdmin($user) || $user->utente?->id_utente === $utente->id_utente;
     }
 
+    public function delete(User $user, Utente $utente): bool
+    {
+        return $this->isAdmin($user);
+    }
+
     public function viewAny(User $user): bool
     {
         return $this->isAdmin($user);

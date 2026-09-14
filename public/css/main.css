@@ -110,7 +110,7 @@ select {
 }
 
 a {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
   color: var(--black);
   max-height: 30px;
@@ -303,6 +303,27 @@ main {
   justify-content: start;
   align-items: start;
   gap: 25px;
+}
+
+#calendario-mese-wrapper {
+  display: contents;
+}
+
+#calendario-giorno-wrapper {
+  display: contents;
+}
+
+#account-wrapper {
+  display: contents;
+}
+
+#le-mie-prenotazioni-wrapper {
+  display: contents;
+}
+
+#riepilogo-settimanale-wrapper {
+  position: relative;
+  display: inline-flex;
 }
 
 #calendar-header {

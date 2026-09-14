@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\PasswordValidationRules;
 
 class RegistrationController extends Controller
-{   
+{
     use PasswordValidationRules;
     public function store(Request $request, GenerateVerificationCode $generateCode)
     {
@@ -45,7 +45,7 @@ class RegistrationController extends Controller
             ->where('registrato', false)
             ->first();
 
-        if (! $utente) {
+        if (!$utente) {
             throw ValidationException::withMessages([
                 'n_tessera' => 'Numero tessera non trovato oppure già registrato.',
             ]);
@@ -71,7 +71,7 @@ class RegistrationController extends Controller
             ->where('registrato', true)
             ->get();
 
-        if($candidatoregistrato->isNotEmpty()){
+        if ($candidatoregistrato->isNotEmpty()) {
             throw ValidationException::withMessages([
                 'nome' => 'Un account con queste credenziali risulta già registrato',
             ]);
@@ -98,12 +98,12 @@ class RegistrationController extends Controller
         [$local, $domain] = explode('@', $email);
         $visible = mb_substr($local, 0, 2);
 
-        return $visible.str_repeat('*', max(mb_strlen($local) - 2, 1)).'@'.$domain;
+        return $visible . str_repeat('*', max(mb_strlen($local) - 2, 1)) . '@' . $domain;
     }
 
     public function showVerifyForm(Request $request)
     {
-        if (! $request->session()->has('pending_registration.id_utente')) {
+        if (!$request->session()->has('pending_registration.id_utente')) {
             return redirect()->route('register');
         }
 
@@ -116,7 +116,7 @@ class RegistrationController extends Controller
     {
         $idUtente = $request->session()->get('pending_registration.id_utente');
 
-        if (! $idUtente) {
+        if (!$idUtente) {
             return redirect()->route('register');
         }
 
@@ -132,7 +132,7 @@ class RegistrationController extends Controller
             ->latest()
             ->first();
 
-        if (! $verificationCode) {
+        if (!$verificationCode) {
             throw ValidationException::withMessages([
                 'code' => 'Nessun codice attivo. Torna indietro e registrati di nuovo.',
             ]);
@@ -150,7 +150,7 @@ class RegistrationController extends Controller
             ]);
         }
 
-        if (! Hash::check($validated['code'], $verificationCode->code)) {
+        if (!Hash::check($validated['code'], $verificationCode->code)) {
             $verificationCode->increment('attempts');
 
             $rimasti = 5 - $verificationCode->attempts;
@@ -181,6 +181,6 @@ class RegistrationController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('app'));
+        return redirect()->intended(route('calendario.mese'));
     }
 }

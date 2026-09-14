@@ -27,6 +27,7 @@
         rel="stylesheet">
     <!--  -->
 
+    @livewireStyles
 </head>
 
 <body>
@@ -40,8 +41,10 @@
                 <a href="/">
                     <img src="{{ asset('img/logo-prenotaldr-giallo.webp') }}" alt="">
                 </a>
-                <h2 id="saluto-header">Ciao <span class="italic" data-get-info="username-name"></span>, al momento
-                    l'auletta <span class="available italic" data-get-info="auletta-state"></span></h2>
+                <h2 id="saluto-header">Ciao <span class="italic">{{ auth()->user()->utente?->nome }}</span>, al momento
+                    l'auletta
+                    <livewire:aulettastato />
+                </h2>
             </div>
         </div>
 
@@ -54,16 +57,14 @@
             </button>
 
             <!-- feedback -->
-            <button class="w-text" data-modal="feedback" title="Invia un feedback">
+            <button type="button" class="w-text" onclick="Livewire.dispatch('apriModalFeedback')"
+                title="Invia un feedback">
                 <i data-lucide="megaphone"></i>
                 <span>Lascia un feedback</span>
             </button>
 
             <!-- prenotazioni -->
-            <button class="w-text" data-modal="le-mie-prenotazioni" title="Limiti delle tue prenotazioni">
-                <i data-lucide="calendar-clock"></i>
-                <span data-booking-count="">-/-</span>
-            </button>
+            <livewire:riepilogo-settimanale />
 
             <!-- inbox -->
             <button data-modal="notifiche" class="notification-button" title="Le tue notifiche">
@@ -72,19 +73,14 @@
             </button>
 
             <!-- profilo utente -->
-            <button data-modal="account" class="no-style" title="Impostazioni account e profilo">
-                <img class="profile-pic" data-profile-pic alt="">
-            </button>
+            <livewire:menu-account />
 
         </div>
 
         <div id="mobile-header" class="horizontal-container">
 
             <!-- prenotazioni -->
-            <button class="w-text" data-modal="le-mie-prenotazioni">
-                <i data-lucide="calendar-clock"></i>
-                <span data-booking-count="">0/7</span>
-            </button>
+            <livewire:riepilogo-settimanale />
 
             <!-- inbox -->
             <button data-modal="notifiche" class="notification-button">
@@ -102,19 +98,6 @@
         <!-- modali dell'header (messe qui per questioni di UI) -->
         <div class="header-modals">
 
-            <!-- limiti prenotazione -->
-            <div id="modal-le-mie-prenotazioni" class="modal">
-                <div class="modal-header auto-gap">
-                    <span class="modal-title">Le mie prenotazioni</span>
-                    <span class="modal-subtitle" data-booking-count>0/7</span>
-                </div>
-                <div class="lista-notifiche">
-                    <span class="modal-advise disabled">
-                        Nessuna prenotazione attiva
-                    </span>
-                </div>
-            </div>
-
             <!-- notifiche -->
             <div id="modal-notifiche" class="modal">
                 <div class="modal-header">
@@ -126,20 +109,6 @@
                 </div>
             </div>
 
-            <!-- account -->
-            <div id="modal-account" class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">———</span>
-                    <span class="modal-subtitle">n.000</span>
-                </div>
-                <div class="lista-notifiche">
-                    <span class="modal-option" data-goto="opzioni"><i data-lucide="settings"></i> Impostazioni</span>
-                    <span class="modal-option" id="dashboard-admin-link"><i data-lucide="layout-dashboard"></i> <a
-                            href="/dashboard.html">Dashboard amministratore</a></span>
-                    <span class="modal-option" onclick="ldrLogout()" style="cursor:pointer"><i
-                            data-lucide="log-out"></i> Effettua Log-out</span>
-                </div>
-            </div>
         </div>
 
     </header>
@@ -151,24 +120,30 @@
 
         <div class="horizontal-container">
 
-            <div id="back-to-bar" class="back-to-bar" aria-hidden="true">
-                <button type="button" id="day-back" class="mini active" aria-label="Torna indietro">
-                    <i data-lucide="arrow-left"></i>
-                    <span>Indietro</span>
-                </button>
+            <div id="back-to-bar" class="back-to-bar @if(request()->routeIs('calendario.giorno')) is-visible @endif"
+                aria-hidden="{{ request()->routeIs('calendario.giorno') ? 'false' : 'true' }}">
+                @if(request()->routeIs('calendario.giorno'))
+                    <button type="button" onclick="window.location.href='{{ route('calendario.mese') }}'"
+                        class="mini active" aria-label="Torna indietro">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                @endif
             </div>
 
-            <button type="button" class="w-text nav-switch active" data-main-view="calendar">
+            <button type="button" onclick="window.location.href='{{ route('calendario.mese') }}'"
+                class="w-text nav-switch @if(request()->routeIs('calendario.mese') || request()->routeIs('calendario.giorno')) active @endif">
                 <i data-lucide="calendar-days"></i>
                 <span>Calendario</span>
             </button>
 
-            <button type="button" class="w-text nav-switch" data-main-view="bookings">
+            <button type="button" onclick="window.location.href='{{ route('prenotazioni') }}'"
+                class="w-text nav-switch @if(request()->routeIs('prenotazioni')) active @endif">
                 <i data-lucide="calendar-clock"></i>
                 <span>Prenotazioni</span>
             </button>
 
-            <button type="button" class="w-text nav-switch" data-main-view="account">
+            <button type="button" onclick="window.location.href='{{ route('impostazioni') }}'"
+                class="w-text nav-switch @if(request()->routeIs('impostazioni')) active @endif">
                 <i data-lucide="settings"></i>
                 <span>Impostazioni</span>
             </button>
@@ -182,44 +157,6 @@
 
         <!-- header con informazioni sul calendario -->
         <div id="calendar-header">
-
-            <!-- indicatore data (mese o giorno del mese) -->
-            <div id="indicatore-data-prenota-turni-container" class="horizontal-container">
-                <!-- <button type="button" id="day-back" class="mini hidden" aria-label="Torna alla vista precedente">
-                    <i data-lucide="arrow-left"></i>
-                </button> -->
-                <h1 id="current-date"></h1>
-            </div>
-
-            <!-- azioni vista mensile -->
-            <div class="horizontal-container hidden" data-view="month">
-
-                <!-- naviga al giorno corrente o al mese precedente/successivo -->
-                <button type="button" id="calendar-prev" class="mini" aria-label="Vai al mese precedente">
-                    <i data-lucide="chevron-left"></i>
-                </button>
-                <button type="button" id="month-today" class="mini" aria-label="Vai al giorno attuale">
-                    <span>Oggi</span>
-                </button>
-                <button type="button" id="calendar-next" class="mini" aria-label="Vai al mese successivo">
-                    <i data-lucide="chevron-right"></i>
-                </button>
-
-                <div class="vertical-separator"></div>
-
-                <!-- seleziona il tipo di vista del calendario -->
-                <button id="cambia-vista-mensile" type="button" class="w-text" data-calendar-switch="week">
-                    <i data-lucide="calendar-1"></i>
-                    <span>Vista mensile</span>
-                </button>
-
-                <!-- effettua una nuova prenotazione -->
-                <button type="button" class="w-text" data-modal="prenota">
-                    <i data-lucide="plus"></i>
-                    <span>Prenota</span>
-                </button>
-
-            </div>
 
             <!-- azioni vista settimanale -->
             <div id="week-view-actions" class="horizontal-container hidden" data-view="week">
@@ -277,22 +214,9 @@
 
         <!-- calendario vista mensile -->
 
-        <div id="calendar-container">
-
-            <!-- colonne del calendario -->
-            <div id="calendar-columns">
-                <h3>lun</h3>
-                <h3>mar</h3>
-                <h3>mer</h3>
-                <h3>gio</h3>
-                <h3>ven</h3>
-                <h3>sab</h3>
-                <h3>dom</h3>
-            </div>
-
-            <div id="calendar-rows"></div>
-
-        </div>
+        @if(request()->routeIs('calendario.mese'))
+            <livewire:calendario-mese />
+        @endif
 
         <!-- vista settimanale -->
 
@@ -318,19 +242,19 @@
 
         <!-- calendario vista giornaliera -->
 
-        <div id="day-calendar-container" class="hidden">
-
-            <div id="day-schedules" class="day-calendar"></div>
-
-        </div>
+        @if(request()->routeIs('calendario.giorno'))
+            <livewire:calendario-giorno :data="request()->route('data')" />
+        @endif
 
         <!-- vista "le mie prenotazioni" -->
-        <div id="my-bookings" class="hidden">
-            <span>Caricamento in corso</span>
-        </div>
+        @if(request()->routeIs('prenotazioni'))
+            <livewire:le-mie-prenotazioni />
+        @endif
 
         <!-- impostazioni account utente -->
-        <div id="account-settings" class="hidden"></div>
+        @if(request()->routeIs('impostazioni'))
+            <livewire:impostazioni-account />
+        @endif
 
         <!-- toast container -->
         <div class="toast-container pos-bottom-center" role="region" aria-label="notifiche">
@@ -345,7 +269,7 @@
 
         <div class="horizontal-container">
 
-            <button class="no-style" data-modal="feedback">
+            <button type="button" class="no-style" onclick="Livewire.dispatch('apriModalFeedback')">
                 <h5>Feedback</h5>
             </button>
 
@@ -391,39 +315,6 @@
 
     <!-- modali a "schermo intero" -------------------------------------------------------------------------------------------------------- -->
 
-    <!-- feedback -->
-    <div id="modal-feedback" class="full-modal">
-        <div class="full-modal-body">
-            <div class="modal-header">
-                <span class="modal-title">Lascia un feedback</span>
-            </div>
-            <div class="full-modal-content">
-                <div class="feedback-categorie horizontal-container">
-                    <label class="feedback-categoria-option">
-                        <input type="radio" name="feedback-categoria" value="bug">
-                        <span>Bug</span>
-                    </label>
-                    <label class="feedback-categoria-option">
-                        <input type="radio" name="feedback-categoria" value="suggerimento">
-                        <span>Suggerimento</span>
-                    </label>
-                    <label class="feedback-categoria-option">
-                        <input type="radio" name="feedback-categoria" value="altro">
-                        <span>Altro</span>
-                    </label>
-                </div>
-                <textarea id="modal-feedback-text" rows="5"
-                    placeholder="Descrivi il problema o lasciaci un feedback..."></textarea>
-            </div>
-            <div class="full-modal-footer">
-                <button type="button" class="w-text" data-modal="close-modal">Annulla</button>
-                <button type="button" class="w-text active" id="btn-modal-invia-feedback">
-                    <i data-lucide="megaphone"></i>
-                    <span>Invia feedback</span>
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- prenota turno -->
     <div id="modal-prenota" class="full-modal">
@@ -627,7 +518,8 @@
                     <i data-lucide="inbox" class="lucide"></i>
                     <span>Notifiche</span>
                 </button>
-                <button type="button" class="side-menu-btn" data-modal="feedback">
+                <button type="button" class="side-menu-btn"
+                    onclick="Livewire.dispatch('apriModalFeedback'); document.querySelector('[data-modal=\'close-modal\']')?.click();">
                     <i data-lucide="megaphone" class="lucide"></i>
                     <span>Lascia un feedback</span>
                 </button>
@@ -654,12 +546,23 @@
 
     <!-- scripts -->
 
-    
+
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>lucide.createIcons();</script>
 
-    @vite(['resources/js/app.js', 'resources/js/modal.js', 'resources/js/calendar-render.js'])
+    @livewireScripts
+
+    @vite(['resources/js/app.js', 'resources/js/modal.js'])
+    <livewire:modal-feedback />
+
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('toast', (event) => {
+                window.showToast(event.tipo, event.messaggio, 'circle-check');
+            });
+        });
+    </script>
 
 </body>
 
