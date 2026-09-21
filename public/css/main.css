@@ -1378,6 +1378,33 @@ footer {
   box-sizing: border-box;
 }
 
+#modal-notifiche {
+  max-width: 320px;
+}
+
+.notifica-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--white-3);
+}
+.notifica-row:last-child {
+  border-bottom: none;
+}
+.notifica-row .booking-week-label {
+  color: var(--white);
+  font-size: 12px;
+  opacity: 0.8;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+}
+.notifica-row .horizontal-container {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 /* Modali a schemo intero */
 
 .full-modal {

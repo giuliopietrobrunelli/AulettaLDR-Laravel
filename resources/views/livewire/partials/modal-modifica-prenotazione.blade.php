@@ -21,7 +21,7 @@
                 <div class="form-section">
                     <div class="form-block">
                         <label><span>Cedi Turno a:</span></label>
-                        <select wire:model="destinatarioId">
+                        <select wire:model.live="destinatarioId">
                             <option value="">Seleziona utente</option>
                             @foreach ($utentiCedibili as $u)
                                 <option value="{{ $u->id_utente }}">{{ $u->cognome }} {{ $u->nome }}</option>

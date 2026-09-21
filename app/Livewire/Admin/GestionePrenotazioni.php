@@ -129,28 +129,32 @@ class GestionePrenotazioni extends Component
     }
 
     public function render()
-    {
-        $oggi = Carbon::today()->format('Y-m-d');
+{
+    $oggi = Carbon::today()->format('Y-m-d');
 
-        $prenotazioni = Prenotazione::with(['turno', 'utente'])
-            ->when($this->filtroPeriodo === 'future', fn($q) => $q->where('data_prenotazione', '>=', $oggi))
-            ->when($this->filtroPeriodo === 'passate', fn($q) => $q->where('data_prenotazione', '<', $oggi))
-            ->when($this->ricerca, function ($q) {
-                $q->whereHas('utente', function ($q2) {
-                    $q2->where('nome', 'like', '%' . $this->ricerca . '%')
-                        ->orWhere('cognome', 'like', '%' . $this->ricerca . '%');
-                });
-            })
-            ->orderByDesc('data_prenotazione')
-            ->paginate(20);
+    $prenotazioni = Prenotazione::query()
+        ->join('Turno', 'Turno.id_turno', '=', 'Prenotazione.id_turno')
+        ->select('Prenotazione.*')
+        ->with(['turno', 'utente'])
+        ->when($this->filtroPeriodo === 'future', fn($q) => $q->where('Prenotazione.data_prenotazione', '>=', $oggi))
+        ->when($this->filtroPeriodo === 'passate', fn($q) => $q->where('Prenotazione.data_prenotazione', '<', $oggi))
+        ->when($this->ricerca, function ($q) {
+            $q->whereHas('utente', function ($q2) {
+                $q2->where('nome', 'like', '%' . $this->ricerca . '%')
+                    ->orWhere('cognome', 'like', '%' . $this->ricerca . '%');
+            });
+        })
+        ->orderBy('Prenotazione.data_prenotazione', $this->filtroPeriodo === 'passate' ? 'desc' : 'asc')
+        ->orderBy('Turno.orario_inizio', $this->filtroPeriodo === 'passate' ? 'desc' : 'asc')
+        ->paginate(20);
 
-        $turni = Turno::orderBy('orario_inizio')->get();
-        $utenti = Utente::orderBy('cognome')->get();
+    $turni = Turno::orderBy('orario_inizio')->get();
+    $utenti = Utente::orderBy('cognome')->get();
 
-        return view('livewire.admin.gestione-prenotazioni', [
-            'prenotazioni' => $prenotazioni,
-            'turni' => $turni,
-            'utenti' => $utenti,
-        ]);
-    }
+    return view('livewire.admin.gestione-prenotazioni', [
+        'prenotazioni' => $prenotazioni,
+        'turni' => $turni,
+        'utenti' => $utenti,
+    ]);
+}
 }

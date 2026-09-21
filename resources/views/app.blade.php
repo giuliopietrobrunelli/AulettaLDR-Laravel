@@ -65,12 +65,8 @@
 
             <!-- prenotazioni -->
             <livewire:riepilogo-settimanale />
-
-            <!-- inbox -->
-            <button data-modal="notifiche" class="notification-button" title="Le tue notifiche">
-                <i data-lucide="inbox"></i>
-                <span class="notification-dot hidden"></span>
-            </button>
+            
+            <livewire:notifiche/>
 
             <!-- profilo utente -->
             <livewire:menu-account />
@@ -82,12 +78,6 @@
             <!-- prenotazioni -->
             <livewire:riepilogo-settimanale />
 
-            <!-- inbox -->
-            <button data-modal="notifiche" class="notification-button">
-                <i data-lucide="inbox"></i>
-                <span class="notification-dot hidden"></span>
-            </button>
-
             <!-- menu -->
             <button data-modal="menu">
                 <i data-lucide="menu"></i>
@@ -97,17 +87,6 @@
 
         <!-- modali dell'header (messe qui per questioni di UI) -->
         <div class="header-modals">
-
-            <!-- notifiche -->
-            <div id="modal-notifiche" class="modal">
-                <div class="modal-header">
-                    <span class="modal-title">Notifiche</span>
-                </div>
-                <div class="lista-notifiche">
-                    <span class="modal-advise take-action">
-                    </span>
-                </div>
-            </div>
 
         </div>
 

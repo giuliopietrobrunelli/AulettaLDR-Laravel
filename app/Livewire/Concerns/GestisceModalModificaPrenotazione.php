@@ -28,7 +28,12 @@ trait GestisceModalModificaPrenotazione
         $prenotazione = Prenotazione::findOrFail($this->modalPrenotazioneId);
         $destinatario = Utente::findOrFail($this->destinatarioId);
 
-        $this->authorize('create', [RichiestaCessione::class, $prenotazione, $destinatario]);
+        try {
+            $this->authorize('create', [RichiestaCessione::class, $prenotazione, $destinatario]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            $this->dispatch('toast', tipo: 'error', messaggio: 'Non è possibile cedere il turno a questo utente: potrebbe aver già raggiunto il limite settimanale o non essere idoneo.');
+            return;
+        }
 
         RichiestaCessione::create([
             'id_prenotazione' => $prenotazione->id_prenotazione,

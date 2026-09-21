@@ -59,6 +59,10 @@ class DatabaseSeeder extends Seeder
         shuffle($combinazioni);
         $daCreare = array_slice($combinazioni, 0, 150);
 
+        usort($daCreare, function ($a, $b) {
+            return [$a['data_prenotazione'], $a['turno']->orario_inizio]
+                    <=> [$b['data_prenotazione'], $b['turno']->orario_inizio];
+        });
         $conteggioSettimanale = [];
         $dueMesiFa = Carbon::now()->subMonths(2);
 

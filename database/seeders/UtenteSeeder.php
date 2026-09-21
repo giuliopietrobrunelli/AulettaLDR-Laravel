@@ -31,7 +31,7 @@ class UtenteSeeder extends Seeder
         [
             'nome' => 'Nicolò',
             'cognome' => 'Cinelli',
-            'email' => 'qoqynocheat@gmail.com',
+            'email' => 'nicocinelli47@gmail.com',
             'numero_tessera' => '3',
             'telefono' => '3394928996',
             'facolta_universitaria' => 'Ingegneria Informatica',

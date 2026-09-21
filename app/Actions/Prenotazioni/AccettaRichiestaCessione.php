@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Actions\RichiesteCessione;
+namespace App\Actions\Prenotazioni;
 
 use App\Models\RichiestaCessione;
+use App\Policies\Concerns\VerificaLimiteSettimanale;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 class AccettaRichiestaCessione
 {
+    use VerificaLimiteSettimanale;
+
     public function handle(RichiestaCessione $richiesta): void
     {
         DB::transaction(function () use ($richiesta) {
@@ -31,6 +34,12 @@ class AccettaRichiestaCessione
 
                 throw ValidationException::withMessages([
                     'richiesta' => 'Il turno richiesto è già terminato.',
+                ]);
+            }
+
+            if (!$this->rispettaLimiteSettimanale($richiesta->id_destinatario, $prenotazione->data_prenotazione)) {
+                throw ValidationException::withMessages([
+                    'richiesta' => 'Hai già raggiunto il limite di prenotazioni per questa settimana.',
                 ]);
             }
 

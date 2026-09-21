@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Prenotazioni\CreatePrenotazione;
 use App\Models\Prenotazione;
+use App\Models\Turno;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,17 +15,22 @@ class PrenotazioneController extends Controller
 {
     // prenotazioni in un intervallo di date, con turno e utente collegati (per il calendario)
     public function index(Request $request)
-    {
-        $validated = Validator::make($request->all(), [
-            'start' => ['required', 'date'],
-            'end' => ['required', 'date', 'after_or_equal:start'],
-        ])->validate();
+{
+    $validated = Validator::make($request->all(), [
+        'start' => ['required', 'date'],
+        'end' => ['required', 'date', 'after_or_equal:start'],
+    ])->validate();
 
-        return Prenotazione::with(['turno', 'utente:id_utente,nome,cognome,foto_profilo'])
-            ->whereHas('turno', fn($q) => $q->where('attivo', true))
-            ->whereBetween('data_prenotazione', [$validated['start'], $validated['end']])
-            ->get();
-    }
+    return Prenotazione::query()
+        ->join('Turno', 'Turno.id_turno', '=', 'Prenotazione.id_turno')
+        ->with(['turno', 'utente:id_utente,nome,cognome,foto_profilo'])
+        ->where('Turno.attivo', true)
+        ->whereBetween('Prenotazione.data_prenotazione', [$validated['start'], $validated['end']])
+        ->select('Prenotazione.*')
+        ->orderBy('Prenotazione.data_prenotazione')
+        ->orderBy('Turno.orario_inizio')
+        ->get();
+}
 
     // prenotazioni dell'utente loggato da una certa data in poi
     public function mine(Request $request)
@@ -37,7 +43,10 @@ class PrenotazioneController extends Controller
             ->where('id_utente', $utente->id_utente)
             ->whereHas('turno', fn($q) => $q->where('attivo', true))
             ->where('data_prenotazione', '>=', $from)
-            ->orderBy('data_prenotazione')
+            ->orderBy('data_prenotazione')->orderBy(
+        Turno::select('orario_inizio')
+            ->whereColumn('Turno.id_turno', 'Prenotazione.id_turno')
+    )
             ->get();
     }
 
