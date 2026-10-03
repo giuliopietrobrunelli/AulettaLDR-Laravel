@@ -105,6 +105,7 @@
                     <div class="form-block">
                         <label><span>Telefono</span></label>
                         <input type="text" wire:model="telefono">
+                        @error('telefono') <span style="color:red;font-size:12px;">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-block">
                         <label><span>Facoltà</span></label>

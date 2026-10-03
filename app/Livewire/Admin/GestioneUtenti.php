@@ -70,13 +70,13 @@ class GestioneUtenti extends Component
 
     public function salva()
     {
-        $regolaEmail = 'required|email|unique:Utente,email' . ($this->modificaUtenteId ? ',' . $this->modificaUtenteId . ',id_utente' : '');
-        $regolaTessera = 'required|numeric|unique:Utente,numero_tessera' . ($this->modificaUtenteId ? ',' . $this->modificaUtenteId . ',id_utente' : '');
+        $regolaEmail = 'required|email|max:255|unique:Utente,email' . ($this->modificaUtenteId ? ',' . $this->modificaUtenteId . ',id_utente' : '');
+        $regolaTessera = 'required|digits_between:1,10|unique:Utente,numero_tessera' . ($this->modificaUtenteId ? ',' . $this->modificaUtenteId . ',id_utente' : '');
 
         $this->validate([
             'email' => $regolaEmail,
             'numeroTessera' => $regolaTessera,
-            'telefono' => 'nullable|string|max:20',
+            'telefono' => 'nullable|digits:10',
             'facoltaUniversitaria' => 'nullable|string|max:255',
         ]);
 

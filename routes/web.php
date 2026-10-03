@@ -16,12 +16,10 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/', function () {
-    return view('welcome');
+    return auth()->check()
+        ? redirect()->route('calendario.mese')
+        : redirect()->route('login');
 });
-
-Route::get('/register-alternative', function () {
-    return view('auth.register-alternative');
-})->middleware(['guest'])->name('register.alternative');
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -47,4 +45,6 @@ Route::middleware([
     Route::get('/calendario/giorno/{data}', fn() => view('app'))->name('calendario.giorno');
     Route::get('/prenotazioni', fn() => view('app'))->name('prenotazioni');
     Route::get('/impostazioni', fn() => view('app'))->name('impostazioni');
+    Route::get('/guida.html', fn() => view('guida'))->name('guida');
 });
+

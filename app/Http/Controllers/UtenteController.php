@@ -39,7 +39,7 @@ class UtenteController extends Controller
         $validated = $request->validate([
             'email' => ['sometimes', 'email', 'max:255', 'unique:Utente,email,' . $utente->id_utente . ',id_utente'],
             'numero_tessera' => ['sometimes', 'digits_between:1,10', 'unique:Utente,numero_tessera,' . $utente->id_utente . ',id_utente'],
-            'telefono' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'telefono' => ['sometimes', 'nullable', 'string', 'digits_between:1,10'],
             'facolta_universitaria' => ['sometimes', 'nullable', 'string', 'max:255'],
             'cauzione' => ['sometimes', 'boolean'],
             'trattamento_dati' => ['sometimes', 'boolean'],
