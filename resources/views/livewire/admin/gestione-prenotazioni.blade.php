@@ -143,8 +143,6 @@
 
     @script
     <script>
-        lucide.createIcons();
-        Livewire.hook('morph.updated', ({ el }) => lucide.createIcons());
         Livewire.on('modal-aperto', () => {
             setTimeout(() => lucide.createIcons(), 50);
         });

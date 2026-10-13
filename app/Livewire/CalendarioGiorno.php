@@ -32,7 +32,11 @@ class CalendarioGiorno extends Component
             return;
         }
 
-        $turno = Turno::findOrFail($idTurno);
+        $turno = Turno::where('attivo', true)->findOrFail($idTurno);
+        if ($turno->terminatoIl($this->data)) {
+            $this->dispatch('toast', tipo: 'error', messaggio: 'Il turno è già terminato.');
+            return;
+        }
         $dataStr = Carbon::parse($this->data)->format('Y-m-d');
         $inizioTurno = Carbon::parse($dataStr . ' ' . $turno->orario_inizio);
         $finestraConfermaChiusa = $inizioTurno->copy()->addMinutes(30)->isPast();

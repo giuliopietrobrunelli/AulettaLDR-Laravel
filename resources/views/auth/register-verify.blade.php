@@ -11,8 +11,6 @@
             <h1>Inserisci il codice ricevuto via email</h1>
         </section>
 
-        <x-validation-errors class="mb-4" />
-
         <section class="form-block">
             <p>Abbiamo inviato un codice a <strong>{{ $emailMasked }}</strong>.<br> Il codice è valido per 5 minuti.</p>
 
@@ -31,6 +29,7 @@
                     required
                     autofocus
                 >
+                <x-field-error name="code" />
             </div>
 
             <div class="form-block">
@@ -43,6 +42,7 @@
                     autocomplete="new-password"
                     required
                 >
+                <x-field-error name="password" />
             </div>
 
             <div class="form-block">
@@ -56,6 +56,7 @@
                     required
                 >
             </div>
+            <x-field-error name="form" />
         </section>
 
         <section class="form-block">

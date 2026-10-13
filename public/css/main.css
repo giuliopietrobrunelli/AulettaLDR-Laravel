@@ -1372,6 +1372,28 @@ footer {
   font-weight: 600;
 }
 
+/* .turno-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.turno-row span {
+  color: var(--black);
+  font-size: 12px;
+}
+.turno-row.past {
+  opacity: 0.4;
+}
+.turno-row.past span {
+  text-decoration: line-through;
+}
+.turno-row.current-week {
+  background-color: var(--white-3);
+} */
+
 #modal-le-mie-prenotazioni .lista-notifiche {
   padding-block: 8px;
   padding-inline: 6px;

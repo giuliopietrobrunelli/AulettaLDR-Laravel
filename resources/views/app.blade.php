@@ -7,12 +7,6 @@
 
     <title>Auletta LDR — prenota l'auletta</title>
 
-    <!-- manifest -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="{{ asset('img/logo-prenotaldr-giallo.webp') }}">
-
     <!-- fogli di stile -->
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
@@ -296,38 +290,7 @@
 
 
     <!-- prenota turno -->
-    <div id="modal-prenota" class="full-modal">
-        <div class="full-modal-body">
-            <div class="modal-header">
-                <span class="modal-title">Prenota l'auletta</span>
-                <span class="modal-subtitle">Seleziona data e turno</span>
-            </div>
-            <div class="full-modal-content">
-                <form id="prenota-form" class="form-block">
-
-                    <div class="form-block">
-                        <label for="prenota-data"><span>Data</span></label>
-                        <input id="prenota-data" name="data" type="date" placeholder="gg.mm.aaaa">
-                    </div>
-
-                    <div class="form-block">
-                        <label for="prenota-turno"><span>Turno</span></label>
-                        <select id="prenota-turno" name="turno">
-                            <option value="" disabled selected>Seleziona un orario</option>
-                        </select>
-                    </div>
-
-                </form>
-            </div>
-            <div class="full-modal-footer">
-                <button type="button" class="w-text" data-modal="close-modal">Annulla</button>
-                <button type="button" class="w-text active" id="btn-modal-conferma-prenota" disabled>
-                    <i data-lucide="check"></i>
-                    <span>Conferma prenotazione</span>
-                </button>
-            </div>
-        </div>
-    </div>
+    <livewire:prenota-turno />
 
     <!-- modifica Turno -->
     <div id="modal-modifica-prenotazione" class="full-modal">

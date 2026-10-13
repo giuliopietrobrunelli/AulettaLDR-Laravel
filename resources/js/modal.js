@@ -46,6 +46,9 @@ export const modal = {
   // gestisce i click globali sulla pagina
   onClick(e) {
     const target = e.target;
+    // ignora i click sintetici generati dal popup nativo del date picker
+    // (il browser a volte li fa atterrare su document.body)
+    if (target === document.body || target === document.documentElement) return;
     // cerca un bottone (o qualsiasi elemento) che attiva un modal tramite data-modal
     const activator = target.closest("[data-modal]");
 
@@ -157,6 +160,8 @@ export const modal = {
     this.getShowing().forEach((el) => this.closeEl(el));
   },
 };
+
+window.modal = modal;
 
 // inizializza tutto quando il dom è pronto
 document.addEventListener("DOMContentLoaded", () => modal.init());

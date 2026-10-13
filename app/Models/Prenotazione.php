@@ -50,4 +50,5 @@ class Prenotazione extends Model
             $q->where('attivo', true);
         });
     }
+
 }

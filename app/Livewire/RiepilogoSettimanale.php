@@ -28,6 +28,7 @@ class RiepilogoSettimanale extends Component
         $fineGriglia = $meseCorrente->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
 
         $mieprenotazioni = Prenotazione::where('id_utente', $miaUtenteId)
+            ->visibili()
             ->whereBetween('data_prenotazione', [$inizioGriglia, $fineGriglia])
             ->get();
 
@@ -38,7 +39,7 @@ class RiepilogoSettimanale extends Component
 
         while ($cursore->lte($fineGriglia)) {
             $inizioSettimana = $cursore->copy();
-            $fineSettimana = $cursore->copy()->addDays(6);
+            $fineSettimana = $cursore->copy()->addDays(6)->endOfDay();
 
             $conteggio = $mieprenotazioni->filter(function ($p) use ($inizioSettimana, $fineSettimana) {
                 $data = Carbon::parse($p->data_prenotazione);

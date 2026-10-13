@@ -40,6 +40,7 @@ class GestioneUtenti extends Component
     {
         $this->authorize('create', Utente::class);
         $this->reset(['nome', 'cognome', 'email', 'numeroTessera', 'telefono', 'facoltaUniversitaria', 'cauzione', 'trattamentoDati', 'modificaUtenteId']);
+        $this->resetValidation();
         $this->modaleAperto = true;
         $this->dispatch('modal-aperto');
     }
@@ -66,6 +67,7 @@ class GestioneUtenti extends Component
     {
         $this->modaleAperto = false;
         $this->reset(['nome', 'cognome', 'email', 'numeroTessera', 'telefono', 'facoltaUniversitaria', 'cauzione', 'trattamentoDati', 'modificaUtenteId']);
+        $this->resetValidation();
     }
 
     public function salva()

@@ -61,30 +61,34 @@ class GestioneTurni extends Component
         } else {
             $this->authorize('create', Turno::class);
 
-            $maxIndice = Turno::max('indice') ?? 0;
-
             Turno::create([
                 'orario_inizio' => $this->orarioInizio,
                 'orario_fine' => $this->orarioFine,
-                'indice' => $maxIndice + 1,
                 'attivo' => true,
             ]);
 
             $this->dispatch('toast', tipo: 'success', messaggio: 'Turno creato.');
         }
 
+        Turno::riordinaIndici();
         $this->chiudiModale();
     }
 
     public function toggleAttivo(int $idTurno)
-    {
-        $turno = Turno::findOrFail($idTurno);
-        $this->authorize('deactivate', $turno);
+{
+    $turno = Turno::findOrFail($idTurno);
+    $this->authorize('deactivate', $turno);
 
-        $turno->update(['attivo' => !$turno->attivo]);
-
-        $this->dispatch('toast', tipo: 'success', messaggio: $turno->attivo ? 'Turno riattivato.' : 'Turno disattivato.');
+    if (!$turno->attivo && Turno::sovrappostoConEsistenti($turno->orario_inizio, $turno->orario_fine, $turno->id_turno)) {
+        $this->dispatch('toast', tipo: 'error', messaggio: 'Impossibile riattivare il turno: si sovrappone a un turno attivo.');
+        return;
     }
+
+    $turno->update(['attivo' => !$turno->attivo]);
+    Turno::riordinaIndici();
+
+    $this->dispatch('toast', tipo: 'success', messaggio: $turno->attivo ? 'Turno riattivato.' : 'Turno disattivato.');
+}
 
     public function elimina(int $idTurno)
     {
@@ -92,6 +96,7 @@ class GestioneTurni extends Component
         $this->authorize('delete', $turno);
 
         $turno->delete();
+        Turno::riordinaIndici();
         $this->dispatch('toast', tipo: 'success', messaggio: 'Turno eliminato (con le sue prenotazioni).');
     }
 

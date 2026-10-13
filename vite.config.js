@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/modal.js',
                 'resources/js/toast.js',
                 'resources/js/admin-toast.js',
+                'resources/js/manage-guida.js',
             ],
             refresh: true,
         }),

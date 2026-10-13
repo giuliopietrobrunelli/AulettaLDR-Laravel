@@ -40,6 +40,7 @@ class LeMiePrenotazioni extends Component
         $adesso = Carbon::now();
 
         $turnoCorrente = Prenotazione::whereDate('data_prenotazione', $oggi)
+            ->visibili()
             ->with(['turno', 'utente'])
             ->get()
             ->first(function ($p) use ($adesso, $oggi) {
@@ -52,6 +53,7 @@ class LeMiePrenotazioni extends Component
             });
 
         $mieFuture = Prenotazione::where('id_utente', $miaUtenteId)
+            ->visibili()
             ->with('turno')
             ->get()
             ->filter(function ($p) use ($turnoCorrente) {

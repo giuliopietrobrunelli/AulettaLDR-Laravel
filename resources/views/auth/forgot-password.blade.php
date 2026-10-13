@@ -11,7 +11,6 @@
             <h1>Recupera la password</h1>
         </section>
 
-        <x-validation-errors class="mb-4" />
 
         @if (session('status'))
             <div class="mb-4 text-sm text-green-600" style="color: #65c45c;">
@@ -34,6 +33,7 @@
                     required
                     autofocus
                 >
+                <x-field-error name="email" />
             </div>
         </section>
 

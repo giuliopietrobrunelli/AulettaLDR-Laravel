@@ -17,7 +17,6 @@ class UtenteSeeder extends Seeder
             'numero_tessera' => '1',
             'telefono' => '3515138800',
             'facolta_universitaria' => 'Ingegneria Informatica',
-            //'ruolo' => 'sviluppatore',
         ],
         [
             'nome' => 'Giulio',
@@ -26,7 +25,6 @@ class UtenteSeeder extends Seeder
             'numero_tessera' => '2',
             'telefono' => '3282305537',
             'facolta_universitaria' => 'Ingegneria Informatica',
-            //'ruolo' => 'sviluppatore',
         ],
         [
             'nome' => 'Nicolò',
@@ -35,7 +33,14 @@ class UtenteSeeder extends Seeder
             'numero_tessera' => '3',
             'telefono' => '3394928996',
             'facolta_universitaria' => 'Ingegneria Informatica',
-            //'ruolo' => 'sviluppatore',
+        ],
+        [
+            'nome' => 'Direttivo',
+            'cognome' => 'Direttivo',
+            'email' => 'aulettaldr@gmail.com',
+            'numero_tessera' => '4',
+            'telefono' => '',
+            'facolta_universitaria' => '',
         ],
         ];
 

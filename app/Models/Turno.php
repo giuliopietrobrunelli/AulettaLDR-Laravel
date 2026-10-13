@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class Turno extends Model
 {
@@ -25,12 +27,16 @@ class Turno extends Model
         'attivo' => 'boolean',
     ];
 
-    protected static function booted(): void
+    // Riscrive gli indici: 1..n sui turni attivi in ordine di orario di inizio, NULL sui disattivati
+    public static function riordinaIndici(): void
     {
-        // Se non viene passato un indice esplicito assegna il prossimo libero
-        static::creating(function (Turno $turno) {
-            if ($turno->indice === null) {
-                $turno->indice = (self::max('indice') ?? 0) + 1;
+        DB::transaction(function () {
+            // prima azzera tutto: aggiornare un indice alla volta violerebbe il vincolo unique
+            self::query()->update(['indice' => null]);
+
+            $indice = 1;
+            foreach (self::where('attivo', true)->orderBy('orario_inizio')->get() as $turno) {
+                $turno->update(['indice' => $indice++]);
             }
         });
     }
@@ -53,5 +59,11 @@ class Turno extends Model
         }
 
         return $query->exists();
+    }
+
+    // true se il turno, nella data indicata, è già finito
+    public function terminatoIl(string $data): bool
+    {
+        return Carbon::parse(Carbon::parse($data)->format('Y-m-d') . ' ' . $this->orario_fine)->isPast();
     }
 }

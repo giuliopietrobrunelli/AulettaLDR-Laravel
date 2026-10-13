@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Amministratore — AulettaLDR</title>
+    <link rel="icon" type="image/webp" href="{{ asset('img/logo-prenotaldr-giallo.webp') }}">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <style>
@@ -109,6 +110,8 @@
             Livewire.on('toast', (event) => {
                 window.showToast(event.tipo, event.messaggio, 'circle-check');
             });
+
+            Livewire.hook('morphed', () => lucide.createIcons());
         });
     </script>
     @vite(['resources/js/admin-toast.js'])

@@ -13,8 +13,6 @@
             <h1>Imposta una nuova password</h1>
         </section>
 
-        <x-validation-errors class="mb-4" />
-
         <section class="form-block">
             <div class="form-block">
                 <label for="email"><span>Email</span></label>
@@ -27,6 +25,7 @@
                     required
                     autofocus
                 >
+                <x-field-error name="email" />
             </div>
 
             <div class="form-block">
@@ -39,6 +38,7 @@
                     autocomplete="new-password"
                     required
                 >
+                <x-field-error name="password" />
             </div>
 
             <div class="form-block">
@@ -51,6 +51,7 @@
                     autocomplete="new-password"
                     required
                 >
+                <x-field-error name="password_confirmation" />
             </div>
         </section>
 

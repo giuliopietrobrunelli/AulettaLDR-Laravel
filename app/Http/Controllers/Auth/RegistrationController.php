@@ -73,20 +73,20 @@ class RegistrationController extends Controller
 
         if ($candidatoregistrato->isNotEmpty()) {
             throw ValidationException::withMessages([
-                'nome' => 'Un account con queste credenziali risulta già registrato',
+                'form' => 'Un account con queste credenziali risulta già registrato',
             ]);
         }
 
         if ($candidati->isEmpty()) {
             throw ValidationException::withMessages([
-                'nome' => 'Nessun socio trovato con questi dati. Contatta il direttivo.',
+                'form' => 'Nessun socio trovato con questi dati. Contatta il direttivo.',
             ]);
         }
 
         if ($candidati->count() > 1) {
             // caso omonimia: rimando l'utente a registrarsi tramite tessera
             throw ValidationException::withMessages([
-                'nome' => 'Trovati più utenti con lo stesso nome e cognome: registrati usando il numero tessera.',
+                'form' => 'Trovati più utenti con lo stesso nome e cognome: registrati usando il numero tessera.',
             ])->redirectTo(route('register'));
         }
 
@@ -134,19 +134,19 @@ class RegistrationController extends Controller
 
         if (!$verificationCode) {
             throw ValidationException::withMessages([
-                'code' => 'Nessun codice attivo. Torna indietro e registrati di nuovo.',
+                'form' => 'Nessun codice attivo. Torna indietro e registrati di nuovo.',
             ]);
         }
 
         if ($verificationCode->isExpired()) {
             throw ValidationException::withMessages([
-                'code' => 'Il codice è scaduto. Torna indietro e registrati di nuovo.',
+                'form' => 'Il codice è scaduto. Torna indietro e registrati di nuovo.',
             ]);
         }
 
         if ($verificationCode->attemptsExceeded()) {
             throw ValidationException::withMessages([
-                'code' => 'Troppi tentativi errati. Torna indietro e registrati di nuovo.',
+                'form' => 'Troppi tentativi errati. Torna indietro e registrati di nuovo.',
             ]);
         }
 
@@ -156,7 +156,7 @@ class RegistrationController extends Controller
             $rimasti = 5 - $verificationCode->attempts;
 
             throw ValidationException::withMessages([
-                'code' => "Codice errato. Tentativi rimasti: {$rimasti}.",
+                'form' => "Codice errato. Tentativi rimasti: {$rimasti}.",
             ]);
         }
 

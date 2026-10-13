@@ -44,11 +44,4 @@
             <span class="stat-card-sub">prenotazioni/settimana</span>
         </div>
     </div>
-
-    @script
-    <script>
-        lucide.createIcons();
-        Livewire.hook('morph.updated', ({ el }) => lucide.createIcons());
-    </script>
-    @endscript
 </div>

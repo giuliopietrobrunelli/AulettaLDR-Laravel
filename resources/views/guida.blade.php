@@ -54,8 +54,8 @@
             <a href="#notifiche">7. Notifiche</a>
             <a href="#account">8. Account e preferenze</a>
             <a href="#feedback">9. Inviare un feedback</a>
-            <a href="#app-mobile">10. Installare l'app</a>
-            <a href="#faq">11. Domande frequenti</a>
+            <!-- <a href="#app-mobile">10. Installare l'app</a> -->
+            <a href="#faq">10. Domande frequenti</a>
         </nav>
 
         <div id="guida-content">
@@ -72,10 +72,10 @@
                     un turno in pochi secondi, gestire le tue prenotazioni esistenti e ricevere notifiche quando
                     qualcuno ti cede il proprio turno.
                 </span>
-                <span>
+                <!-- <span>
                     La piattaforma funziona da browser, sia su computer che su smartphone, e può anche essere
                     installata come app sul telefono (vedi la sezione <a href="#app-mobile">10. Installare l'app</a>).
-                </span>
+                </span> -->
             </section>
 
             <!-- 2. ACCESSO E REGISTRAZIONE -->
@@ -114,20 +114,20 @@
             <section class="guida-section" id="calendario">
                 <h2>3. Il calendario</h2>
                 <span>
-                    Il calendario è la schermata principale dell'app e mostra la disponibilità dell'auletta. Sono disponibili 3 diverse viste:
+                    Il calendario è la schermata principale dell'app e mostra la disponibilità dell'auletta.
                 </span>
                 <ul>
                     <span>
                         <li><strong>Vista mensile</strong>: Mostra una panoramica delle prenotazioni durante l'intero mese attuale, precedente o successivo (se disponibile).</li>
                     </span>
-                    <span>
+                    <!-- <span>
                         <li><strong>Vista settimanale</strong>: Mostra le disponibilità nelle settimane del mese attuale, precedente o successivo (se disponibile), con tutti i turni affiancati per
                             giorno (questa vista è disponibile solamente da tablet o da pc).</li>
-                    </span>
-                    <span>
+                    </span> -->
+                    <!-- <span>
                         <li><strong>Vista giornaliera</strong>: Mostra l'elenco completo dei turni di un singolo giorno, con
                             lo stato di ciascuno; si apre cliccando su un giorno dal calendario mensile o settimanale.</li>
-                    </span>
+                    </span> -->
                 </ul>
                 <span>
                     In ogni vista puoi navigare avanti e indietro nel tempo con le frecce, oltre a tornare rapidamente al giorno attuale con il pulsante "Oggi".
@@ -209,7 +209,7 @@
             <section class="guida-section" id="le-mie-prenotazioni">
                 <h2>5. Le mie prenotazioni</h2>
                 <span>
-                    Dalla scheda Prenotazioni (barra di navigazione o menu laterale su mobile) vedi
+                    Dalla scheda Prenotazioni (barra di navigazione) vedi
                     l'elenco di tutti i tuoi turni futuri, raggruppati per giorno, e — se è il momento del tuo turno
                     — anche l'indicazione se l'auletta è attualmente occupata da te o da qualcun altro.
                 </span>
@@ -270,7 +270,7 @@
             <section class="guida-section" id="notifiche">
                 <h2>7. Notifiche</h2>
                 <span>
-                    L'icona a forma di posta in arrivo, in alto nella pagina (o nel menu su mobile), raccoglie le
+                    L'icona a forma di posta in arrivo, in alto nella pagina, raccoglie le
                     notifiche relative alle richieste di cessione turno che altri tesserati ti hanno inviato. Un
                     pallino rosso ti segnala la presenza di notifiche non ancora gestite.
                 </span>
@@ -278,42 +278,42 @@
                     Da qui puoi accettare e prenotare il turno propostoti, oppure
                     rifiutare la richiesta.
                 </span>
-                <div class="guida-tip">
+                <!-- <div class="guida-tip">
                     <i data-lucide="lightbulb" class="lucide"></i>
                     <span>Attiva le notifiche push (vedi <a href="#account">8. Account e preferenze</a>) per essere
                         avvisato anche quando non hai l'app aperta.</span>
-                </div>
+                </div> -->
             </section>
 
             <!-- 8. ACCOUNT -->
             <section class="guida-section" id="account">
                 <h2>8. Account e preferenze</h2>
                 <span>
-                    Dalla scheda profilo (icona in alto a destra, o "Impostazioni account" nel menu su mobile) puoi:
+                    Dalla scheda profilo (icona in alto a destra) puoi:
                 </span>
                 <ul>
-                    <span>
+                    <!-- <span>
                         <li><strong>Cambiare la foto profilo</strong> — formati supportati: JPG, PNG, WEBP, GIF, fino a
                             3 MB.</li>
-                    </span>
+                    </span> -->
                     <span>
                         <li><strong>Consultare i tuoi dati anagrafici</strong> — nome, cognome, numero tessera, email
                             (di sola lettura: per correggerli contatta un amministratore).</li>
                     </span>
-                    <span>
+                    <!-- <span>
                         <li><strong>Attivare o disattivare le notifiche push</strong> sul tuo dispositivo.</li>
                     </span>
                     <span>
                         <li><strong>Scegliere come vengono mostrati gli altri utenti prenotati</strong> nella vista
                             mensile del calendario: con le loro immagini profilo, oppure con semplici pallini, per maggiore
                             privacy.</li>
-                    </span>
+                    </span> -->
                 </ul>
-                <div class="guida-tip">
+                <!-- <div class="guida-tip">
                     <i data-lucide="apple" class="lucide"></i>
                     <span>Su iPhone/iPad, le notifiche push funzionano solo se hai prima aggiunto Auletta LDR alla
                         schermata Home (vedi <a href="#app-mobile">10. Installare l'app</a>).</span>
-                </div>
+                </div> -->
             </section>
 
             <!-- 9. FEEDBACK -->
@@ -342,7 +342,7 @@
             </section>
 
             <!-- 10. APP MOBILE -->
-            <section class="guida-section" id="app-mobile">
+            <!-- <section class="guida-section" id="app-mobile">
                 <h2>10. Installare l'app sul telefono</h2>
                 <span>
                     Auletta LDR può essere installata come app, senza passare da nessuno store, il vantaggio principale è quello di poter ricevere notifiche push come se fosse un'applicazione vera e propria.
@@ -377,11 +377,11 @@
                         <li>Ora puoi abilitare le notifiche push direttamente dalla pagina Impostazioni di Auletta LDR.</li>
                     </span>
                 </ol>
-            </section>
+            </section> -->
 
-            <!-- 11. FAQ -->
+            <!-- 10. FAQ -->
             <section class="guida-section" id="faq">
-                <h2>11. Domande frequenti</h2>
+                <h2>10. Domande frequenti</h2>
 
                 <div class="guida-faq-item">
                     <div class="guida-faq-q">
@@ -408,14 +408,14 @@
                         particolare, puoi contattare un amministratore.</span>
                 </div>
 
-                <div class="guida-faq-item">
+                <!-- <div class="guida-faq-item">
                     <div class="guida-faq-q">
                         <h2>Non ricevo le notifiche sul mio telefono.</h2>
                     </div>
                     <span>Verifica di aver dato il permesso al browser di inviarti notifiche nella vista impostazioni e preferenze (raggiungibile tramite il menu laterale) e, su iPhone/iPad, di
                         aver installato l'app dalla schermata Home (vedi <a href="#app-mobile">10. Installare
                             l'app</a>). Su alcuni browser desktop le notifiche push non sono supportate.</span>
-                </div>
+                </div> -->
 
                 <div class="guida-faq-item">
                     <div class="guida-faq-q">

@@ -4,6 +4,7 @@
         Auletta LDR — Effettua l'accesso
     </x-slot>
 
+    @php($credenzialiErrate = $errors->first('email') === __('auth.failed'))
     <form id="login-form" novalidate method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -12,46 +13,50 @@
             <h1>Accedi per prenotare l'auletta</h1>
         </section>
 
-        <x-validation-errors class="mb-4" />
 
         @if (session('status'))
-            <div class="mb-4 text-sm text-green-600" style="color: #65c45c;">
-                {{ session('status') }}
-            </div>
+        <div class="mb-4 text-sm text-green-600" style="color: #65c45c;">
+            {{ session('status') }}
+        </div>
         @endif
 
         <section class="form-block">
             <div class="form-block">
                 <label for="email"><span>Email / Numero tessera</span></label>
-                <input 
-                    id="email" 
-                    name="email" 
-                    type="text" 
-                    placeholder="tuamail@esempio.it o 0000" 
-                    value="{{ old('email') }}" 
-                    autocomplete="username" 
-                    required 
-                    autofocus
-                >
+                <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    placeholder="tuamail@esempio.it o 0000"
+                    value="{{ old('email') }}"
+                    autocomplete="username"
+                    required
+                    autofocus>
+                @unless ($credenzialiErrate)
+                <x-field-error name="email" />
+                @endunless
             </div>
 
             <div class="form-block">
                 <label for="password"><span>Password</span></label>
-                <input 
-                    id="password" 
-                    name="password" 
-                    type="password" 
-                    placeholder="••••••••" 
-                    autocomplete="current-password" 
-                    required
-                >
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required>
+                <x-field-error name="password" />
             </div>
+            @if ($credenzialiErrate)
+            <x-field-error name="email" />
+            @endif
 
             <div class="horizontal-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" style="font-size: 13px; text-decoration: underline;">
-                        Password dimenticata? Reimposta la password
-                    </a>
+                <a href="{{ route('password.request') }}" style="font-size: 13px; text-decoration: underline;">
+                    Password dimenticata? Reimposta la password
+                </a>
                 @endif
             </div>
         </section>

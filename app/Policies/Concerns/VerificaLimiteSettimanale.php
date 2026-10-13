@@ -17,6 +17,7 @@ trait VerificaLimiteSettimanale
         $fineSettimana = $data->copy()->endOfWeek();
 
         $conteggio = Prenotazione::where('id_utente', $idUtente)
+            ->visibili()
             ->whereBetween('data_prenotazione', [$inizioSettimana, $fineSettimana])
             ->count();
 

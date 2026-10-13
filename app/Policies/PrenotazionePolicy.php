@@ -13,20 +13,23 @@ class PrenotazionePolicy
 {
     use AutorizzaAdmin, VerificaLimiteSettimanale;
 
+    // PrenotazionePolicy.php
     public function create(User $user, ?string $dataPrenotazione = null): bool
     {
-        if ($this->isAdmin($user)) {
-            return true;
-        }
-
-        return $this->creaComeUtenteNormale($user, $dataPrenotazione);
+        return $this->creaComeUtenteNormale($user, $dataPrenotazione); // sempre col limite, admin incluso
     }
+
+    public function createPrivileged(User $user): bool
+    {
+        return $this->isAdmin($user); // nessun controllo di limite: solo verifica che sia admin
+    }
+
 
     public function creaComeUtenteNormale(User $user, ?string $dataPrenotazione = null): bool
     {
         $utente = $user->utente;
 
-        if (!$utente || !$utente->cauzione || !$utente->registrato) {
+        if (!$utente || !$utente->registrato) {
             return false;
         }
 

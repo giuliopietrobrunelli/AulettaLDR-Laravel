@@ -12,8 +12,6 @@
             <h1>Registrati tramite i tuoi dati</h1>
         </section>
 
-        <x-validation-errors class="mb-4" />
-
         <section class="form-block">
             <div class="form-block">
                 <label for="nome"><span>Nome</span></label>
@@ -29,6 +27,7 @@
                     required
                     autofocus
                 >
+                <x-field-error name="nome" />
             </div>
 
             <div class="form-block">
@@ -44,7 +43,10 @@
                     oninput="this.value=this.value.replace(/[^a-zA-ZàèéìòùÀÈÉÌÒÙáéíóúÁÉÍÓÚ\s'-]/g,'')" 
                     required
                 >
+                <x-field-error name="cognome" />
             </div>
+                <x-field-error name="form" />
+
         </section>
 
         <section class="form-block">

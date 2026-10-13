@@ -46,9 +46,10 @@ class GestionePrenotazioni extends Component
 
     public function apriPrenotazionePrivilegiata()
     {
-        $this->authorize('create', Prenotazione::class);
+        $this->authorize('createPrivileged', Prenotazione::class);
         $this->reset(['dataPrenotazione', 'idTurno', 'idUtente', 'modificaPrenotazioneId']);
-        $this->stato = 'riservata';
+        $this->resetValidation();
+        $this->stato = 'Non confermata';
         $this->modalePrivilegiataAperto = true;
         $this->dispatch('modal-aperto');
     }
@@ -63,6 +64,7 @@ class GestionePrenotazioni extends Component
         $this->idTurno = $prenotazione->id_turno;
         $this->idUtente = $prenotazione->id_utente;
         $this->stato = $prenotazione->stato;
+        $this->resetValidation();
         $this->modaleAperto = true;
         $this->dispatch('modal-aperto');
     }
@@ -72,6 +74,7 @@ class GestionePrenotazioni extends Component
         $this->modaleAperto = false;
         $this->modalePrivilegiataAperto = false;
         $this->reset(['dataPrenotazione', 'idTurno', 'idUtente', 'modificaPrenotazioneId']);
+        $this->resetValidation();
     }
 
     public function salva()
@@ -82,6 +85,11 @@ class GestionePrenotazioni extends Component
             'idUtente' => 'required|exists:Utente,id_utente',
             'stato' => 'required|in:non_confermata,confermata,riservata',
         ]);
+
+        if ($this->stato === 'riservata' && $this->idUtente !== $this->idUtenteDirettivo()) {
+            $this->dispatch('toast', tipo: 'error', messaggio: 'Lo stato "riservata" è applicabile solo all\'utente Direttivo.');
+            return;
+        }
 
         try {
             if ($this->modificaPrenotazioneId) {
@@ -98,7 +106,7 @@ class GestionePrenotazioni extends Component
 
                 $this->dispatch('toast', tipo: 'success', messaggio: 'Prenotazione aggiornata.');
             } else {
-                $this->authorize('create', Prenotazione::class);
+                $this->authorize('createPrivileged', Prenotazione::class);
 
                 Prenotazione::create([
                     'data_prenotazione' => $this->dataPrenotazione,
@@ -128,33 +136,38 @@ class GestionePrenotazioni extends Component
         $this->dispatch('toast', tipo: 'success', messaggio: 'Prenotazione eliminata.');
     }
 
+    private function idUtenteDirettivo(): ?int
+    {
+        return Utente::where('email', 'aulettaldr@gmail.com')->value('id_utente');
+    }
+
     public function render()
-{
-    $oggi = Carbon::today()->format('Y-m-d');
+    {
+        $oggi = Carbon::today()->format('Y-m-d');
 
-    $prenotazioni = Prenotazione::query()
-        ->join('Turno', 'Turno.id_turno', '=', 'Prenotazione.id_turno')
-        ->select('Prenotazione.*')
-        ->with(['turno', 'utente'])
-        ->when($this->filtroPeriodo === 'future', fn($q) => $q->where('Prenotazione.data_prenotazione', '>=', $oggi))
-        ->when($this->filtroPeriodo === 'passate', fn($q) => $q->where('Prenotazione.data_prenotazione', '<', $oggi))
-        ->when($this->ricerca, function ($q) {
-            $q->whereHas('utente', function ($q2) {
-                $q2->where('nome', 'like', '%' . $this->ricerca . '%')
-                    ->orWhere('cognome', 'like', '%' . $this->ricerca . '%');
-            });
-        })
-        ->orderBy('Prenotazione.data_prenotazione', $this->filtroPeriodo === 'passate' ? 'desc' : 'asc')
-        ->orderBy('Turno.orario_inizio', $this->filtroPeriodo === 'passate' ? 'desc' : 'asc')
-        ->paginate(20);
+        $prenotazioni = Prenotazione::query()
+            ->join('Turno', 'Turno.id_turno', '=', 'Prenotazione.id_turno')
+            ->select('Prenotazione.*')
+            ->with(['turno', 'utente'])
+            ->when($this->filtroPeriodo === 'future', fn($q) => $q->where('Prenotazione.data_prenotazione', '>=', $oggi))
+            ->when($this->filtroPeriodo === 'passate', fn($q) => $q->where('Prenotazione.data_prenotazione', '<', $oggi))
+            ->when($this->ricerca, function ($q) {
+                $q->whereHas('utente', function ($q2) {
+                    $q2->where('nome', 'like', '%' . $this->ricerca . '%')
+                        ->orWhere('cognome', 'like', '%' . $this->ricerca . '%');
+                });
+            })
+            ->orderBy('Prenotazione.data_prenotazione', $this->filtroPeriodo === 'passate' ? 'desc' : 'asc')
+            ->orderBy('Turno.orario_inizio', $this->filtroPeriodo === 'passate' ? 'desc' : 'asc')
+            ->paginate(20);
 
-    $turni = Turno::orderBy('orario_inizio')->get();
-    $utenti = Utente::orderBy('cognome')->get();
+        $turni = Turno::orderBy('orario_inizio')->get();
+        $utenti = Utente::orderBy('cognome')->get();
 
-    return view('livewire.admin.gestione-prenotazioni', [
-        'prenotazioni' => $prenotazioni,
-        'turni' => $turni,
-        'utenti' => $utenti,
-    ]);
-}
+        return view('livewire.admin.gestione-prenotazioni', [
+            'prenotazioni' => $prenotazioni,
+            'turni' => $turni,
+            'utenti' => $utenti,
+        ]);
+    }
 }
