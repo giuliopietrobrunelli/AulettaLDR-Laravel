@@ -8,6 +8,7 @@ use App\Models\Utente;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 
 class GestionePrenotazioni extends Component
 {
@@ -20,11 +21,17 @@ class GestionePrenotazioni extends Component
     public string $dataPrenotazione = '';
     public ?int $idTurno = null;
     public ?int $idUtente = null;
-    public string $stato = 'non_confermata';
+    public string $stato = '';
 
     public string $filtroPeriodo = 'future';
     public string $ricerca = '';
 
+
+    public function mount()
+    {
+        $this->dataPrenotazione = now()->format('Y-m-d');
+    }
+    
     public function cambiaFiltroPeriodo(string $periodo)
     {
         $this->filtroPeriodo = $periodo;
@@ -49,7 +56,7 @@ class GestionePrenotazioni extends Component
         $this->authorize('createPrivileged', Prenotazione::class);
         $this->reset(['dataPrenotazione', 'idTurno', 'idUtente', 'modificaPrenotazioneId']);
         $this->resetValidation();
-        $this->stato = 'Non confermata';
+        $this->stato = '';
         $this->modalePrivilegiataAperto = true;
         $this->dispatch('modal-aperto');
     }
@@ -86,43 +93,58 @@ class GestionePrenotazioni extends Component
             'stato' => 'required|in:non_confermata,confermata,riservata',
         ]);
 
-        if ($this->stato === 'riservata' && $this->idUtente !== $this->idUtenteDirettivo()) {
-            $this->dispatch('toast', tipo: 'error', messaggio: 'Lo stato "riservata" è applicabile solo all\'utente Direttivo.');
-            return;
-        }
-
         try {
-            if ($this->modificaPrenotazioneId) {
-                $prenotazione = Prenotazione::findOrFail($this->modificaPrenotazioneId);
-                $this->authorize('update', $prenotazione);
+            $sostituita = null;
 
-                $prenotazione->update([
-                    'data_prenotazione' => $this->dataPrenotazione,
-                    'id_turno' => $this->idTurno,
-                    'id_utente' => $this->idUtente,
-                    'stato' => $this->stato,
-                    'data_conferma' => $this->stato === 'confermata' ? ($prenotazione->data_conferma ?? now()) : null,
-                ]);
+            DB::transaction(function () use (&$sostituita) {
+                // prenotazione già presente su questo turno e data (esclusa quella che sto modificando)
+                $esistente = Prenotazione::with('utente')
+                    ->where('id_turno', $this->idTurno)
+                    ->whereDate('data_prenotazione', $this->dataPrenotazione)
+                    ->when($this->modificaPrenotazioneId, fn($q) => $q->where('id_prenotazione', '!=', $this->modificaPrenotazioneId))
+                    ->first();
 
-                $this->dispatch('toast', tipo: 'success', messaggio: 'Prenotazione aggiornata.');
-            } else {
-                $this->authorize('createPrivileged', Prenotazione::class);
+                if ($esistente) {
+                    $this->authorize('delete', $esistente);
+                    $sostituita = $esistente->utente->cognome . ' ' . $esistente->utente->nome;
+                    $esistente->delete();
+                }
 
-                Prenotazione::create([
-                    'data_prenotazione' => $this->dataPrenotazione,
-                    'id_turno' => $this->idTurno,
-                    'id_utente' => $this->idUtente,
-                    'stato' => $this->stato,
-                    'data_creazione_prenotazione' => now(),
-                    'data_conferma' => $this->stato === 'confermata' ? now() : null,
-                ]);
+                if ($this->modificaPrenotazioneId) {
+                    $prenotazione = Prenotazione::findOrFail($this->modificaPrenotazioneId);
+                    $this->authorize('update', $prenotazione);
 
-                $this->dispatch('toast', tipo: 'success', messaggio: 'Prenotazione creata.');
+                    $prenotazione->update([
+                        'data_prenotazione' => $this->dataPrenotazione,
+                        'id_turno' => $this->idTurno,
+                        'id_utente' => $this->idUtente,
+                        'stato' => $this->stato,
+                        'data_conferma' => $this->stato === 'confermata' ? ($prenotazione->data_conferma ?? now()) : null,
+                    ]);
+                } else {
+                    $this->authorize('create', Prenotazione::class);
+
+                    Prenotazione::create([
+                        'data_prenotazione' => $this->dataPrenotazione,
+                        'id_turno' => $this->idTurno,
+                        'id_utente' => $this->idUtente,
+                        'stato' => $this->stato,
+                        'data_creazione_prenotazione' => now(),
+                        'data_conferma' => $this->stato === 'confermata' ? now() : null,
+                    ]);
+                }
+            });
+
+            $messaggio = $this->modificaPrenotazioneId ? 'Prenotazione aggiornata.' : 'Prenotazione creata.';
+            if ($sostituita) {
+                $messaggio .= " Sostituita la prenotazione di {$sostituita}.";
             }
 
+            $this->dispatch('toast', tipo: 'success', messaggio: $messaggio);
             $this->chiudiModale();
         } catch (\Illuminate\Database\QueryException $e) {
-            $this->dispatch('toast', tipo: 'error', messaggio: 'Turno già occupato per questa data.');
+            \Log::error('salva prenotazione admin', ['errore' => $e->getMessage()]);
+            $this->dispatch('toast', tipo: 'error', messaggio: 'Impossibile salvare la prenotazione.');
         }
     }
 
@@ -164,10 +186,22 @@ class GestionePrenotazioni extends Component
         $turni = Turno::orderBy('orario_inizio')->get();
         $utenti = Utente::orderBy('cognome')->get();
 
+        $turniOccupati = [];
+
+        if ($this->dataPrenotazione) {
+            $turniOccupati = Prenotazione::with('utente')
+                ->whereDate('data_prenotazione', $this->dataPrenotazione)
+                ->when($this->modificaPrenotazioneId, fn($q) => $q->where('id_prenotazione', '!=', $this->modificaPrenotazioneId))
+                ->get()
+                ->mapWithKeys(fn($p) => [$p->id_turno => $p->utente->cognome . ' ' . $p->utente->nome])
+                ->all();
+        }
+
         return view('livewire.admin.gestione-prenotazioni', [
             'prenotazioni' => $prenotazioni,
             'turni' => $turni,
             'utenti' => $utenti,
+            'turniOccupati' => $turniOccupati,
         ]);
     }
 }

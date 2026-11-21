@@ -65,7 +65,7 @@ class UtenteSeeder extends Seeder
                 'facolta_universitaria' => $utente['facolta_universitaria'],
                 'cauzione' => true,
                 'trattamento_dati' => true,
-                'registrato' => true,
+                'registrato' => false,
                 'vista_predefinita' => 'month',
             ]);
         }

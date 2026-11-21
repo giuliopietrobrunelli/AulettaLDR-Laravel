@@ -4,6 +4,9 @@ namespace App\Livewire\Admin;
 
 use App\Models\Turno;
 use Livewire\Component;
+use App\Models\Impostazioni;
+use App\Models\Prenotazione;
+use Illuminate\Support\Carbon;
 
 class GestioneTurni extends Component
 {
@@ -73,22 +76,64 @@ class GestioneTurni extends Component
         Turno::riordinaIndici();
         $this->chiudiModale();
     }
+    private function utentiOltreLimite(Turno $turno): array
+    {
+        $limite = (int) Impostazioni::where('nome', 'limite_settimanale')->value('valore');
 
-    public function toggleAttivo(int $idTurno)
-{
-    $turno = Turno::findOrFail($idTurno);
-    $this->authorize('deactivate', $turno);
+        $prenotazioni = Prenotazione::with('utente')
+            ->where('id_turno', $turno->id_turno)
+            ->whereDate('data_prenotazione', '>=', Carbon::today())
+            ->get();
 
-    if (!$turno->attivo && Turno::sovrappostoConEsistenti($turno->orario_inizio, $turno->orario_fine, $turno->id_turno)) {
-        $this->dispatch('toast', tipo: 'error', messaggio: 'Impossibile riattivare il turno: si sovrappone a un turno attivo.');
-        return;
+        $nomi = [];
+
+        foreach ($prenotazioni as $p) {
+            $data = Carbon::parse($p->data_prenotazione);
+
+            $conteggio = Prenotazione::where('id_utente', $p->id_utente)
+                ->whereBetween('data_prenotazione', [
+                    $data->copy()->startOfWeek(),
+                    $data->copy()->endOfWeek(),
+                ])
+                ->count();
+
+            if ($conteggio > $limite) {
+                $nomi[$p->id_utente] = $p->utente->cognome . ' ' . $p->utente->nome;
+            }
+        }
+
+        return array_values($nomi);
     }
 
-    $turno->update(['attivo' => !$turno->attivo]);
-    Turno::riordinaIndici();
+    public function toggleAttivo(int $idTurno)
+    {
+        $turno = Turno::findOrFail($idTurno);
+        $this->authorize('deactivate', $turno);
 
-    $this->dispatch('toast', tipo: 'success', messaggio: $turno->attivo ? 'Turno riattivato.' : 'Turno disattivato.');
-}
+        $turno->update(['attivo' => !$turno->attivo]);
+
+        if (!$turno->attivo) {
+            $this->dispatch('toast', tipo: 'success', messaggio: 'Turno disattivato.');
+            return;
+        }
+
+        $this->dispatch('toast', tipo: 'success', messaggio: 'Turno riattivato.');
+
+        $oltreLimite = $this->utentiOltreLimite($turno);
+
+        if (count($oltreLimite) > 0) {
+            $elenco = implode(', ', array_slice($oltreLimite, 0, 3));
+            if (count($oltreLimite) > 3) {
+                $elenco .= ' e altri ' . (count($oltreLimite) - 3);
+            }
+
+            $this->dispatch(
+                'toast',
+                tipo: 'info',
+                messaggio: "Attenzione: riattivando questo turno {$elenco} supera il limite settimanale di prenotazioni."
+            );
+        }
+    }
 
     public function elimina(int $idTurno)
     {

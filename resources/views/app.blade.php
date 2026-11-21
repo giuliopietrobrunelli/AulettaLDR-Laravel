@@ -59,8 +59,9 @@
 
             <!-- prenotazioni -->
             <livewire:riepilogo-settimanale />
-            
-            <livewire:notifiche/>
+
+            <!--notifiche -->
+            <livewire:notifiche />
 
             <!-- profilo utente -->
             <livewire:menu-account />
@@ -70,7 +71,9 @@
         <div id="mobile-header" class="horizontal-container">
 
             <!-- prenotazioni -->
-            <livewire:riepilogo-settimanale />
+            <livewire:riepilogo-settimanale :mobile="true" />
+            <!--notifiche -->
+            <livewire:notifiche :mobile="true" />
 
             <!-- menu -->
             <button data-modal="menu">
@@ -273,12 +276,14 @@
     <!-- barra navigazione mobile -->
     <div id="navigation-bar" class="navigation-bar is-visible" aria-hidden="true">
         <div class="navigation-bar-inner horizontal-container">
-            <button type="button" class="active" data-main-view="calendar">
+            <button type="button" onclick="window.location.href='{{ route('calendario.mese') }}'"
+                class="w-text nav-switch @if(request()->routeIs('calendario.mese') || request()->routeIs('calendario.giorno')) active @endif">
                 <i data-lucide="calendar-days"></i>
                 <span>Calendario</span>
             </button>
 
-            <button type="button" class="" data-main-view="bookings">
+            <button type="button" onclick="window.location.href='{{ route('prenotazioni') }}'"
+                class="w-text nav-switch @if(request()->routeIs('prenotazioni')) active @endif">
                 <i data-lucide="calendar-clock"></i>
                 <span>Prenotazioni</span>
             </button>
@@ -421,12 +426,12 @@
         <div id="side-menu-drawer">
             <div class="side-menu-header">
                 <div class="side-menu-user">
-                    <img class="profile-pic" data-profile-pic alt="">
-                    <div class="side-menu-user-info">
-                        <h2 id="saluto-menu">Ciao <span class="italic" data-get-info="username-name"></span>, al momento
-                            l'auletta <span class="available italic" data-get-info="auletta-state"></span></h2>
-                        <span class="side-menu-role disabled" data-get-info="username-role"></span>
+                    <div class="profile-pic"
+                        style="background:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;width:32px;height:32px;">
+                        {{ strtoupper(auth()->user()->utente->nome[0] ?? '?') }}
                     </div>
+                    <span>Ciao {{ auth()->user()->utente->nome }}, al momento l'auletta
+                        <livewire:auletta-stato /></span>
                 </div>
                 <button type="button" class="no-style side-menu-close" aria-label="Chiudi menu"
                     data-modal="close-modal">
@@ -436,15 +441,20 @@
 
             <nav class="side-menu-nav">
                 <span class="side-menu-section-label">Navigazione</span>
-                <button type="button" class="side-menu-btn active" data-main-view="calendar" data-modal="close-modal">
+                <button type="button" class="side-menu-btn {{ request()->routeIs('calendario.mese') ? 'active' : '' }}"
+                    onclick="window.location.href='{{ route('calendario.mese') }}'">
                     <i data-lucide="calendar-days" class="lucide"></i>
                     <span>Calendario</span>
                 </button>
-                <button type="button" class="side-menu-btn" data-main-view="bookings" data-modal="close-modal">
+
+                <button type="button" class="side-menu-btn {{ request()->routeIs('prenotazioni') ? 'active' : '' }}"
+                    onclick="window.location.href='{{ route('prenotazioni') }}'">
                     <i data-lucide="calendar-clock" class="lucide"></i>
                     <span>Le mie prenotazioni</span>
                 </button>
-                <button type="button" class="side-menu-btn" data-main-view="account" data-modal="close-modal">
+
+                <button type="button" class="side-menu-btn {{ request()->routeIs('impostazioni') ? 'active' : '' }}"
+                    onclick="window.location.href='{{ route('impostazioni') }}'">
                     <i data-lucide="settings" class="lucide"></i>
                     <span>Impostazioni</span>
                 </button>
@@ -452,16 +462,20 @@
                 <div class="divider"></div>
                 <span class="side-menu-section-label">Altre informazioni</span>
 
-                <button type="button" class="side-menu-btn" data-modal="le-mie-prenotazioni">
+                <button type="button" class="side-menu-btn" data-modal="close-modal"
+                    onclick="setTimeout(() => Livewire.dispatch('apriRiepilogo'), 100)">
                     <i data-lucide="bar-chart-2" class="lucide"></i>
                     <span>Riepilogo prenotazioni e limiti</span>
                 </button>
-                <button type="button" class="side-menu-btn" data-modal="notifiche">
+
+                <button type="button" class="side-menu-btn" data-modal="close-modal"
+                    onclick="setTimeout(() => Livewire.dispatch('apriNotifiche'), 100)">
                     <i data-lucide="inbox" class="lucide"></i>
                     <span>Notifiche</span>
                 </button>
-                <button type="button" class="side-menu-btn"
-                    onclick="Livewire.dispatch('apriModalFeedback'); document.querySelector('[data-modal=\'close-modal\']')?.click();">
+
+                <button type="button" class="side-menu-btn" data-modal="close-modal"
+                    onclick="Livewire.dispatch('apriModalFeedback')">
                     <i data-lucide="megaphone" class="lucide"></i>
                     <span>Lascia un feedback</span>
                 </button>
@@ -476,7 +490,8 @@
 
                 <div class="divider"></div>
 
-                <button type="button" class="side-menu-btn side-menu-btn--danger" onclick="ldrLogout()">
+                <button type="button" class="side-menu-btn side-menu-btn--danger"
+                    onclick="document.getElementById('logout-form-menu').submit()">
                     <i data-lucide="log-out" class="lucide"></i>
                     <span>Esci</span>
                 </button>
@@ -505,7 +520,31 @@
             });
         });
     </script>
+    <script>
+        (() => {
+            let pianificato = false;
 
+            const aggiornaIcone = () => {
+                if (pianificato) return;
+                pianificato = true;
+                requestAnimationFrame(() => {
+                    pianificato = false;
+                    if (document.querySelector('i[data-lucide]')) {
+                        lucide.createIcons();
+                    }
+                });
+            };
+
+            new MutationObserver(aggiornaIcone).observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+
+            document.addEventListener('DOMContentLoaded', aggiornaIcone);
+        })();
+    </script>
+
+    <form id="logout-form-menu" method="POST" action="{{ route('logout') }}" style="display:none;">@csrf</form>
 </body>
 
 </html>

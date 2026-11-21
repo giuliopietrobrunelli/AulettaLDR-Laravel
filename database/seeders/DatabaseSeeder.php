@@ -16,11 +16,8 @@ class DatabaseSeeder extends Seeder
             ImpostazioniSeeder::class,
             UtenteSeeder::class,
             AmministratoreSeeder::class,
-            PrenotazioneSeeder::class,
         ]);
 
-        RichiestaCessione::factory()->count(5)->create();
-        Feedback::factory()->count(5)->create();
     }
 
     

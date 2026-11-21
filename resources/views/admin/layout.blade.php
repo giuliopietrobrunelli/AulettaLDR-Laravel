@@ -90,7 +90,7 @@
             <livewire:admin.statistiche />
         @endif
     </main>
-    
+
     <footer>
         <h5>© 2010-2026 Il Lume della Ragione — Dashboard amministratori</h5>
 
@@ -115,6 +115,29 @@
         });
     </script>
     @vite(['resources/js/admin-toast.js'])
+    <script>
+        (() => {
+            let pianificato = false;
+
+            const aggiornaIcone = () => {
+                if (pianificato) return;
+                pianificato = true;
+                requestAnimationFrame(() => {
+                    pianificato = false;
+                    if (document.querySelector('i[data-lucide]')) {
+                        lucide.createIcons();
+                    }
+                });
+            };
+
+            new MutationObserver(aggiornaIcone).observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+
+            document.addEventListener('DOMContentLoaded', aggiornaIcone);
+        })();
+    </script>
 </body>
 
 </html>

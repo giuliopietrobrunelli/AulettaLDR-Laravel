@@ -10,10 +10,26 @@ use Livewire\Component;
 
 class RiepilogoSettimanale extends Component
 {
+    public bool $mobile = false;
+    public bool $apertoMobile = false;
+
     #[On('prenotazione-aggiornata')]
     public function aggiorna()
     {
         // vuoto: la presenza del metodo triggera un re-render con dati freschi
+    }
+
+    #[On('apriRiepilogo')]
+    public function apriRiepilogo()
+    {
+        if ($this->mobile) {
+            $this->apertoMobile = true;
+        }
+    }
+
+    public function chiudiRiepilogo()
+    {
+        $this->apertoMobile = false;
     }
 
     public function render()

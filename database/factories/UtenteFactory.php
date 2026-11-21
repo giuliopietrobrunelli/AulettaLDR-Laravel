@@ -31,7 +31,7 @@ class UtenteFactory extends Factory
             ]),
             'cauzione' => $this->faker->boolean(95),
             'trattamento_dati' => true,
-            'registrato' => $this->faker->boolean(90),
+            'registrato' => false,
             'foto_profilo' => null,
             'vista_predefinita' => $this->faker->randomElement(['month', 'list']),
         ];

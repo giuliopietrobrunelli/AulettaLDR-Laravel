@@ -10,6 +10,22 @@ use Livewire\Component;
 
 class Notifiche extends Component
 {
+    public bool $mobile = false;
+    public bool $apertoMobile = false;
+
+    #[On('apriNotifiche')]
+    public function apriNotifiche()
+    {
+        if ($this->mobile) {
+            $this->apertoMobile = true;
+        }
+    }
+
+    public function chiudiNotifiche()
+    {
+        $this->apertoMobile = false;
+    }
+
     #[On('prenotazione-aggiornata')]
     public function aggiorna()
     {
@@ -45,9 +61,9 @@ class Notifiche extends Component
         $utente = auth()->user()->utente;
 
         $richieste = RichiestaCessione::with([
-                'prenotazione.turno',
-                'mittente:id_utente,nome,cognome',
-            ])
+            'prenotazione.turno',
+            'mittente:id_utente,nome,cognome',
+        ])
             ->where('id_destinatario', $utente?->id_utente)
             ->where('stato', 'in_attesa')
             ->latest('created_at')

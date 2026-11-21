@@ -89,7 +89,7 @@
                 <div class="full-modal-content">
                     <div class="form-block">
                         <label><span>Data</span></label>
-                        <input type="date" wire:model="dataPrenotazione">
+                        <input type="date" wire:model.live="dataPrenotazione">
                         @error('dataPrenotazione') <span style="color:red;font-size:12px;">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-block">
@@ -97,8 +97,13 @@
                         <select wire:model="idTurno">
                             <option value="">Seleziona turno</option>
                             @foreach ($turni as $turno)
-                                <option value="{{ $turno->id_turno }}">{{ $turno->indice }}°
-                                    ({{ substr($turno->orario_inizio, 0, 5) }}-{{ substr($turno->orario_fine, 0, 5) }})</option>
+                                <option value="{{ $turno->id_turno }}">
+                                    {{ $turno->indice }}°
+                                    ({{ substr($turno->orario_inizio, 0, 5) }}-{{ substr($turno->orario_fine, 0, 5) }})
+                                    @isset($turniOccupati[$turno->id_turno])
+                                        — occupato da {{ $turniOccupati[$turno->id_turno] }}
+                                    @endisset
+                                </option>
                             @endforeach
                         </select>
                         @error('idTurno') <span style="color:red;font-size:12px;">{{ $message }}</span> @enderror
@@ -117,6 +122,7 @@
                     <div class="form-block">
                         <label><span>Stato</span></label>
                         <select wire:model="stato">
+                            <option value="">Seleziona stato</option>
                             <option value="non_confermata">Non confermata</option>
                             <option value="confermata">Confermata</option>
                             <option value="riservata">Riservata</option>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d4fdbf486bec16c8b9d05b078ac7fa3",
+    "content-hash": "e2a5d4bd39d73ff90cba3e4fcee8dbe5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -8633,16 +8633,16 @@
         },
         {
             "name": "laravel-lang/common",
-            "version": "6.8.0",
+            "version": "6.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/common.git",
-                "reference": "f1e3383f94c4f157f0f41324792382bf2dd84d52"
+                "reference": "7c7c00a493ec6718d09559470b51110b42193cfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/common/zipball/f1e3383f94c4f157f0f41324792382bf2dd84d52",
-                "reference": "f1e3383f94c4f157f0f41324792382bf2dd84d52",
+                "url": "https://api.github.com/repos/Laravel-Lang/common/zipball/7c7c00a493ec6718d09559470b51110b42193cfa",
+                "reference": "7c7c00a493ec6718d09559470b51110b42193cfa",
                 "shasum": ""
             },
             "require": {
@@ -8660,7 +8660,6 @@
                 "php": "^8.1"
             },
             "require-dev": {
-                "dragon-code/support": "^6.13",
                 "orchestra/testbench": "^8.17 || ^9.1.2 || ^10.0 || ^11.0",
                 "phpunit/phpunit": "^10.5.20 || ^11.0 || ^12.0",
                 "symfony/var-dumper": "^6.4 || ^7.1.1 || ^8.0"
@@ -8727,7 +8726,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-03-17T23:15:14+00:00"
+            "time": "2026-11-07T20:54:11+00:00"
         },
         {
             "name": "laravel-lang/config",
