@@ -31,7 +31,7 @@ class GestionePrenotazioni extends Component
     {
         $this->dataPrenotazione = now()->format('Y-m-d');
     }
-    
+
     public function cambiaFiltroPeriodo(string $periodo)
     {
         $this->filtroPeriodo = $periodo;
@@ -92,6 +92,18 @@ class GestionePrenotazioni extends Component
             'idUtente' => 'required|exists:Utente,id_utente',
             'stato' => 'required|in:non_confermata,confermata,riservata',
         ]);
+
+        $destinatario = Utente::with('amministratore')->findOrFail($this->idUtente);
+
+        if ($this->stato === 'riservata' && !$destinatario->isDirettivo()) {
+            $this->dispatch('toast', tipo: 'error', messaggio: 'Una prenotazione riservata può essere assegnata solo a un membro del direttivo.');
+            return;
+        }
+
+        if ($this->stato !== 'riservata' && $destinatario->isDirettivo()) {
+            $this->dispatch('toast', tipo: 'error', messaggio: 'Ai membri del direttivo si possono assegnare solo prenotazioni riservate.');
+            return;
+        }
 
         try {
             $sostituita = null;
@@ -163,6 +175,33 @@ class GestionePrenotazioni extends Component
         return Utente::where('email', 'aulettaldr@gmail.com')->value('id_utente');
     }
 
+    public function updatedStato()
+    {
+        if (!$this->idUtente) {
+            return;
+        }
+
+        $direttivo = Utente::find($this->idUtente)?->isDirettivo();
+
+        if (($this->stato === 'riservata') !== (bool) $direttivo) {
+            $this->idUtente = null;
+        }
+    }
+    public function updatedIdUtente()
+    {
+        if (!$this->idUtente) {
+            return;
+        }
+
+        $utente = Utente::find($this->idUtente);
+
+        if ($utente?->isDirettivo()) {
+            $this->stato = 'riservata';
+        } elseif ($this->stato === 'riservata') {
+            $this->stato = '';
+        }
+    }
+
     public function render()
     {
         $oggi = Carbon::today()->format('Y-m-d');
@@ -184,7 +223,15 @@ class GestionePrenotazioni extends Component
             ->paginate(20);
 
         $turni = Turno::orderBy('orario_inizio')->get();
-        $utenti = Utente::orderBy('cognome')->get();
+        $utenti = Utente::with('amministratore')->orderBy('cognome')->get()
+            ->filter(fn($u) => $this->stato === '' || ($this->stato === 'riservata') === $u->isDirettivo())
+            ->values();
+
+        $utenteScelto = $this->idUtente ? Utente::find($this->idUtente) : null;
+
+        $statiAmmessi = $utenteScelto
+            ? ($utenteScelto->isDirettivo() ? ['riservata'] : ['non_confermata', 'confermata'])
+            : ['non_confermata', 'confermata', 'riservata'];
 
         $turniOccupati = [];
 
@@ -202,6 +249,7 @@ class GestionePrenotazioni extends Component
             'turni' => $turni,
             'utenti' => $utenti,
             'turniOccupati' => $turniOccupati,
+            'statiAmmessi' => $statiAmmessi,
         ]);
     }
 }

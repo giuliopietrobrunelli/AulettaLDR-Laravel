@@ -33,7 +33,6 @@ class UtenteFactory extends Factory
             'trattamento_dati' => true,
             'registrato' => false,
             'foto_profilo' => null,
-            'vista_predefinita' => $this->faker->randomElement(['month', 'list']),
         ];
     }
 }

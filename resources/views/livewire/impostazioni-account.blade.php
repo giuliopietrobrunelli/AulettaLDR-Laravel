@@ -34,11 +34,4 @@
         <span style="font-size:12px;opacity:0.6;">Per modificare questi dati contatta un amministratore.</span>
     </div>
 
-    <div class="form-section">
-        <h2>Sicurezza</h2>
-        <span style="font-size:12px;opacity:0.6;">Password, autenticazione a due fattori e sessioni attive si gestiscono dalla pagina del profilo.</span>
-        <button type="button" class="w-text" onclick="window.location.href='{{ route('profile.show') }}'">
-            <span>Vai alle impostazioni di sicurezza</span>
-        </button>
-    </div>
 </div>

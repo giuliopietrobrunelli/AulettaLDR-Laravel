@@ -14,9 +14,18 @@ class Utente extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id', 'numero_tessera', 'nome', 'cognome', 'email', 'telefono',
-        'facolta_universitaria', 'cauzione', 'trattamento_dati', 'registrato',
-        'foto_profilo', 'vista_predefinita',
+        'user_id',
+        'numero_tessera',
+        'nome',
+        'cognome',
+        'email',
+        'telefono',
+        'facolta_universitaria',
+        'cauzione',
+        'trattamento_dati',
+        'registrato',
+        'foto_profilo',
+        'vista_predefinita',
     ];
 
     protected $casts = [
@@ -28,6 +37,11 @@ class Utente extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function isDirettivo(): bool
+    {
+        return strcasecmp(trim($this->email), 'aulettaldr@gmail.com') === 0;
     }
 
     public function prenotazioni()
@@ -46,7 +60,7 @@ class Utente extends Model
     }
 
     public function verificationCodes()
-{
-    return $this->hasMany(VerificationCode::class, 'id_utente', 'id_utente');
-}
+    {
+        return $this->hasMany(VerificationCode::class, 'id_utente', 'id_utente');
+    }
 }

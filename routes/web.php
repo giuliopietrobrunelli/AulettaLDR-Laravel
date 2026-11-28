@@ -41,6 +41,7 @@ Route::middleware([
         return view('app');
     })->name('dashboard');
 
+    Route::permanentRedirect('/app', '/calendario');
     Route::get('/calendario', fn() => view('app'))->name('calendario.mese');
     Route::get('/calendario/giorno/{data}', fn() => view('app'))->name('calendario.giorno');
     Route::get('/prenotazioni', fn() => view('app'))->name('prenotazioni');

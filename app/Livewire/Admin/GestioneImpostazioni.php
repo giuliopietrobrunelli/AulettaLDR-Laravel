@@ -20,7 +20,7 @@ class GestioneImpostazioni extends Component
     {
         $this->validate([
             'limiteSettimanale' => 'required|integer|min:1',
-            'settimaneAnticipo' => 'required|integer|min:0',
+            'settimaneAnticipo' => 'required|integer|min:0|max:4',
         ]);
 
         $impostazioneLimite = Impostazioni::where('nome', 'limite_settimanale')->first();

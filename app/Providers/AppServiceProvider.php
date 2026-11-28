@@ -18,6 +18,7 @@ use App\Policies\StatistichePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Validation\Rules\Password;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Facades\Mail;
 
@@ -32,6 +33,16 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Password::defaults(function () {
+            $rule = Password::min(10)
+                ->mixedCase()
+                ->numbers()
+                ->symbols();
+
+            // Il controllo sui data breach richiede rete: lo attivo solo in produzione
+            return app()->isProduction() ? $rule->uncompromised() : $rule;
+        });
+
         Gate::policy(Prenotazione::class, PrenotazionePolicy::class);
         Gate::policy(Utente::class, UtentePolicy::class);
         Gate::policy(Turno::class, TurnoPolicy::class);

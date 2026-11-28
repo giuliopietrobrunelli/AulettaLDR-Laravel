@@ -110,7 +110,7 @@
                     </div>
                     <div class="form-block">
                         <label><span>Utente</span></label>
-                        <select wire:model="idUtente">
+                        <select wire:model.live="idUtente">
                             <option value="">Seleziona utente</option>
                             @foreach ($utenti as $utente)
                                 <option value="{{ $utente->id_utente }}">{{ $utente->cognome }} {{ $utente->nome }}
@@ -121,11 +121,17 @@
                     </div>
                     <div class="form-block">
                         <label><span>Stato</span></label>
-                        <select wire:model="stato">
+                        <select wire:model.live="stato">
                             <option value="">Seleziona stato</option>
-                            <option value="non_confermata">Non confermata</option>
-                            <option value="confermata">Confermata</option>
-                            <option value="riservata">Riservata</option>
+                            @if (in_array('non_confermata', $statiAmmessi))
+                                <option value="non_confermata">Non confermata</option>
+                            @endif
+                            @if (in_array('confermata', $statiAmmessi))
+                                <option value="confermata">Confermata</option>
+                            @endif
+                            @if (in_array('riservata', $statiAmmessi))
+                                <option value="riservata">Riservata</option>
+                            @endif
                         </select>
                     </div>
                 </div>

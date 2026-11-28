@@ -71,11 +71,14 @@ trait GestisceModalModificaPrenotazione
 
         $utentiCedibili = collect();
         if ($prenotazioneModal) {
-            $utentiCedibili = Utente::where('cauzione', true)
+            $utentiCedibili = Utente::with('amministratore')
+                ->where('cauzione', true)
                 ->where('registrato', true)
                 ->where('id_utente', '!=', $miaUtenteId)
                 ->orderBy('cognome')
-                ->get();
+                ->get()
+                ->reject(fn ($u) => $u->isDirettivo())
+                ->values();
         }
 
         return compact('prenotazioneModal', 'utentiCedibili');

@@ -11,7 +11,8 @@
 
         <div class="setting-row">
             <label for="settimane-anticipo">Settimane di anticipo</label>
-            <input type="number" id="settimane-anticipo" wire:model="settimaneAnticipo" min="0" max="4">
+            <input type="number" id="settimane-anticipo" wire:model="settimaneAnticipo" min="0" max="4"
+                oninput="if (this.value !== '') { this.value = Math.min(4, Math.max(1, parseInt(this.value) || 1)); this.dispatchEvent(new Event('input')); }">
             <span class="setting-desc">Quante settimane prima della fine del mese diventa visibile il mese successivo per le prenotazioni.</span>
             @error('settimaneAnticipo') <span style="color:red;font-size:12px;">{{ $message }}</span> @enderror
         </div>

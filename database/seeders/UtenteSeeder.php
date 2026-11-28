@@ -66,7 +66,6 @@ class UtenteSeeder extends Seeder
                 'cauzione' => true,
                 'trattamento_dati' => true,
                 'registrato' => false,
-                'vista_predefinita' => 'month',
             ]);
         }
 

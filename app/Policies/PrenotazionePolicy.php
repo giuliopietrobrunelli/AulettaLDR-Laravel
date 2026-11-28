@@ -33,6 +33,10 @@ class PrenotazionePolicy
             return false;
         }
 
+        if ($utente->isDirettivo()) {
+            return false;
+        }
+
         if ($dataPrenotazione === null) {
             return true;
         }
